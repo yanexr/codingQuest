@@ -1,0 +1,176 @@
+[
+    {
+        "id": 50,
+        "title": "Basic Calculator",
+        "category": "Other",
+        "description": "Implement a basic calculator to evaluate a simple expression string.\nThe expression string may contain open `(` and closing parentheses `)`,\nthe plus `+` or minus sign `-`, non-negative integers and empty spaces ` `.",
+        "sampleInput": "'(1+(4+5+2)-3)+(6+8)'",
+        "sampleOutput": "23",
+        "difficulty": "Hard",
+        "stdin": "'(1+(4+5+2)-3)+(6+8)'",
+        "targetStdout": "23",
+        "solution": [
+          {
+            "code": "def basic_calculator(s):\n    return calculate(s, 0)[0]\n\ndef calculate(s, i):\n    sign = 1    # 1 means '+' and -1 means '-'\n    res = 0\n    num = 0\n\n    while i < len(s) and s[i] != ')':\n        if s[i] >= '0' and s[i] <= '9':\n            # find the whole number\n            num = num * 10 + int(s[i])\n        elif s[i] == '(': # calculate inside the brackets\n            brackets = calculate(s, i + 1)\n            res += brackets[0] * sign\n            i = brackets[1] # continue from the new i\n        elif s[i] != ' ':\n            # add the previous number using the old sign\n            res += num * sign\n            num = 0\n\n            if s[i] == '-':\n                sign = -1\n            elif s[i] == '+':\n                sign = 1\n\n        i += 1\n\n    res += num * sign\n    return (res, i)",
+            "explanation": "Start from the first character and respect the math rules. When brackets come, go inside the brackets and compute the inner result, after that continue with adding or subtracting.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(K)`    , much less than N (the deepest level of brackets)"
+          }
+        ]
+      },
+      {
+        "id": 51,
+        "title": "Find min path",
+        "category": "Other",
+        "description": "You are given an `M` by `N` matrix consisting of booleans that represents a board.\nEach True boolean represents a wall. Each False boolean represents a tile you can walk on.\nGiven this matrix, a start coordinate, and an end coordinate,\nreturn the minimum number of steps required to reach the end coordinate from the start.\nIf there is no possible path, then return null. You can move up, left, down, and right.\nYou cannot move through walls. You cannot wrap around the edges of the board.",
+        "sampleInput": "[[f, f, f, f], [t, t, f, t], [f, f, f, f], [f, f, f, f]], start = (3, 0), end = (0, 0)",
+        "sampleOutput": "7",
+        "difficulty": "Easy",
+        "stdin": "[[f, f, f, f], [t, t, f, t], [f, f, f, f], [f, f, f, f]] (3, 0) (0, 0)",
+        "targetStdout": "7",
+        "solution": [
+          {
+            "code": "from collections import deque\n\ndef find_min_path(board, start, end):\n    n = len(board)\n    m = len(board[0])\n\n    # create a visited array\n    visited = [[False for el in range(m)] for row in range(n)]\n\n    queue = deque()\n    queue.append((start, 0))\n    directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # up, right, down, left\n\n    # simple bfs\n    while queue:\n        el = queue.popleft()\n        position = el[0]\n        steps = el[1]\n\n        # check if this position is already visited\n        if visited[position[0]][position[1]]:\n            continue\n\n        visited[position[0]][position[1]] = True\n\n        # check if this position is walkable\n        if board[position[0]][position[1]] == 't':\n            continue\n\n        # if the end was reached return steps\n        if position == end:\n            return steps\n\n        newSteps = steps + 1\n\n        # add all neighbours at the end of the queue\n        for d in directions:\n            x = position[0] + d[0]\n            y = position[1] + d[1]\n\n            if (x < n) and (x >= 0) and (y < m) and (y >= 0):\n                queue.append(((x, y), newSteps))\n\n    # the path was not found\n    return None",
+            "explanation": "BFS solution using queue.\n\n**Time Complexity:** `O(N * M)`\n\n**Space Complexity:** `O(N * M)`"
+          }
+        ]
+      },
+      {
+        "id": 52,
+        "title": "Generate Parentheses",
+        "category": "Other",
+        "description": "Given `n` pairs of parentheses, write a function to generate all combinations of well-formed parentheses.",
+        "sampleInput": "3",
+        "sampleOutput": "[ '((()))', '(()())', '(())()', '()(())', '()()()']",
+        "difficulty": "Medium",
+        "stdin": "3",
+        "targetStdout": "['((()))', '(()())', '(())()', '()(())', '()()()']",
+        "solution": [
+          {
+            "code": "def generate_parentheses(n):\n    result = []\n    if n == 0:\n        return result\n\n    combinations(result, n, n, '')\n\n    return result\n\ndef combinations(result, open_left, close_left, combination):\n    if close_left == 0:\n        result.append(combination)\n    elif open_left == 0:\n        result.append(combination + (')' * close_left))\n    else:\n        combinations(result, open_left - 1, close_left, combination + '(')\n        if open_left < close_left:\n            combinations(result, open_left, close_left - 1, combination + ')')",
+            "explanation": "This problem could be solved in several ways (using stack, queue, or just a simple list - see `letter_combinations.py`), all of them have the same complexity. I'll solve it using simple recursive algorithm.\n\n**Time Complexity:** `O(4^N)`     , `O(2^(2*N))` = `O(4^N)`\n\n**Space Complexity:** `O(4^N`)"
+          }
+        ]
+      },
+      {
+        "id": 53,
+        "title": "Letter Combinations of a Phone Number",
+        "category": "Other",
+        "description": "Given a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent.\nA mapping of digit to letters is just like on the telephone buttons. Note that `1` does not map to any letters.",
+        "sampleInput": "digits = '23'",
+        "sampleOutput": "['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']",
+        "difficulty": "Easy",
+        "stdin": "'23'",
+        "targetStdout": "['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']",
+        "solution": [
+          {
+            "code": "def letter_combinations(digits):\n    if len(digits) == 0:\n        return []\n\n    mappings = {\n        '2': ['a','b','c'],\n        '3': ['d','e','f'],\n        '4': ['g','h','i'],\n        '5': ['j','k','l'],\n        '6': ['m','n','o'],\n        '7': ['p','q','r','s'],\n        '8': ['t','u','v'],\n        '9': ['w','x','y','z']\n    }\n    prev_combinations = ['']\n\n    for digit in digits:\n        new_combinations = []\n        for combination in prev_combinations:\n            # use the mappings and create new combinations\n            for mapping in mappings[digit]:\n                new_combinations.append(combination + mapping)\n        # save the newest combinations\n        prev_combinations = new_combinations\n\n    return prev_combinations",
+            "explanation": "This problem could be solved in several ways (using recursion, stack, queue...) and the complexity is the same in all, but this one has the simplest code.\nIterate all digits and in each step look for the previous combinations, create a new 3 or 4 combinations from each combination using the mapping letters.\n\n**Time Complexity:** `O(3^N * 4^M)`    , N = number of digits that maps to 3 letters, M = number of digits that maps to 4 letters\n\n**Space Complexity:** `O(3^N * 4^M)`"
+          }
+        ]
+      },
+      {
+        "id": 54,
+        "title": "Number of Islands",
+        "category": "Other",
+        "description": "Given a 2d grid map of '1's (land) and '0's (water), count the number of islands.\nAn island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.\nYou may assume all four edges of the grid are all surrounded by water.",
+        "sampleInput": "[['1','1','0','0','0'], ['1','1','0','0','0'], ['0','0','1','0','0'], ['0','0','0','1','1']]",
+        "sampleOutput": "3",
+        "difficulty": "Medium",
+        "stdin": "[['1','1','0','0','0'], ['1','1','0','0','0'], ['0','0','1','0','0'], ['0','0','0','1', '1']]",
+        "targetStdout": "3",
+        "solution": [
+          {
+            "code": "from collections import deque\n\ndef num_of_islands(grid):\n    n = len(grid)\n    if n == 0:\n        return 0\n    m = len(grid[0])\n\n    islands = 0\n    queue = deque()\n    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]\n\n    for i in range(n):\n        for j in range(m):\n            # search for an island\n            if grid[i][j] == '1':\n                islands += 1\n                queue.append((i, j))\n\n                # BFS\n                while queue:\n                    coord = queue.popleft()\n                    x, y = coord\n                    \n                    if grid[x][y] != '1':\n                        continue\n                    # delete the island\n                    grid[x][y] = '0'\n\n                    for direction in directions:\n                        # calculate the next position\n                        next_x, next_y = (x + direction[0], y + direction[1])\n                        # check if the next position is valid\n                        if (next_x < 0) or (next_x >= n):\n                            continue\n                        if (next_y < 0) or (next_y >= m):\n                            continue\n                        # save this position\n                        queue.append((next_x, next_y))\n\n    return islands",
+            "explanation": "This problem can be solved in several ways (using DFS recursion or using the stack data structure) i'll solve it with BFS using Queue data structure.\n\n**Time Complexity:** `O(M * N)`\n\n**Space Complexity:** `O(M * N)`"
+          }
+        ]
+      },
+      {
+        "id": 55,
+        "title": "Palindrome Integer",
+        "category": "Other",
+        "description": "Determine whether an integer is a palindrome.\nAn integer is a palindrome when it reads the same backward as forward.",
+        "sampleInput": "121",
+        "sampleOutput": "True",
+        "difficulty": "Easy",
+        "stdin": "121",
+        "targetStdout": "True",
+        "solution": [
+          {
+            "code": "def palindrome_integer_1(x):\n    if x < 0:\n        return False\n\n    rev = 0\n    temp = x\n    while temp > 0:\n        rev = (rev * 10) + (temp % 10)\n        temp //= 10\n\n    return rev == x\n\n# Test 1\n# Correct result => True\nx = 121\nprint(palindrome_integer_1(x))",
+            "explanation": "Just reverse the number and compare it with the original.\n\n**Time Complexity:** `O(N)` , N = number of digits\n\n**Space Complexity:** `O(1)`"
+          },
+          {
+            "code": "def palindrome_integer_2(x):\n    if (x < 0) or (x > 0 and x % 10 == 0):\n        return False\n\n    rev = 0\n    # if the reversed number is bigger from the original\n    # that means the reversed number has same number of digits or more (1 or 2 more)\n    while x > rev:\n        rev = (rev * 10) + (x % 10)\n        x //= 10\n    \n    # first comparison is for even number of digits and the second for odd number of digits\n    return (rev == x) or (rev // 10 == x)\n\n# Test 1\n# Correct result => True\nx = 121\nprint(palindrome_integer_2(x))",
+            "explanation": "If you care about integer overflow (in Python you shouldn't care about this), then reverse only a half of the number\nand compare it with the other half. Also this solution is faster than the previous one because iterates only a half of the number.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+          }
+        ]
+      },
+      {
+        "id": 56,
+        "title": "Queens Problem",
+        "category": "Other",
+        "description": "You have an `N` by `N` board. Write a function that, given `N`, returns the number of possible arrangements of the board where `N` queens can be placed on the board without threatening each other, i.e. no two queens share the same row, column, or diagonal.",
+        "sampleInput": "place_n_queens(1)",
+        "sampleOutput": "1",
+        "difficulty": "Hard",
+        "stdin": "1",
+        "targetStdout": "1",
+        "solution": [
+          {
+            "code": "def place_n_queens(n):\n    columns = [False for i in range(n)]\n    order = []\n\n    return backtracking(columns, order)\n\ndef backtracking(columns, order):\n    n = len(columns)\n\n    if len(order) == n:\n        return 1\n\n    total = 0\n\n    for i in range(n):\n        if (not columns[i]) and check_diagonals(order, i):\n            order.append(i)\n            columns[i] = True\n            total += backtracking(columns, order)\n            columns[i] = False\n            del order[-1]\n\n    return total\n\ndef check_diagonals(order, pos):\n    current_row = len(order)\n\n    for i in range(current_row):\n        if (i - order[i]) == (current_row - pos):\n            return False\n        if (i + order[i]) == (current_row + pos):\n            return False\n\n    return True",
+            "explanation": "Backtracking solution.\n\n**Time Complexity:** `O(N!)` (but I think it's much faster!)\n\n**Space Complexity:** `O(N)`"
+          }
+        ]
+      },
+      {
+        "id": 57,
+        "title": "Reverse Integer",
+        "category": "Other",
+        "description": "Given signed integer, reverse digits of an integer.",
+        "sampleInput": "123",
+        "sampleOutput": "321",
+        "difficulty": "Easy",
+        "stdin": "123",
+        "targetStdout": "321",
+        "solution": [
+          {
+            "code": "def reverse_integer(x):\n    if x == 0:\n        return 0\n\n    sign = x // abs(x)  # find the sign, -1 or 1\n    x *= sign  # make positive x, or x = abs(x)\n\n    res = 0\n    while x > 0:\n        res = (res * 10) + (x % 10)\n        x //= 10\n\n    return res * sign\n\n# Test 1\n# Correct result => 321\nprint(reverse_integer(123))",
+            "explanation": "Simple solution, mod 10 to find all digits.\n\n**Time Complexity:** `O(N)` , N = number of digits\n\n**Space Complexity:** `O(1)`"
+          }
+        ]
+      },
+      {
+        "id": 58,
+        "title": "Running Median",
+        "category": "Other",
+        "description": "Compute the running median of a sequence of numbers.\nThat is, given a stream of numbers, print out the median of the list so far on each new element.\nRecall that the median of an even-numbered list is the average of the two middle numbers.",
+        "sampleInput": "stream = [2, 1, 5, 7, 2, 0, 5]",
+        "sampleOutput": "2\n1.5\n2\n3.5\n2\n2\n2",
+        "difficulty": "Medium",
+        "stdin": "[2, 1, 5, 7, 2, 0, 5]",
+        "targetStdout": "2\n1.5\n2\n3.5\n2\n2\n2",
+        "solution": [
+          {
+            "code": "import heapq\n\nclass PriorityQueue:\n    def __init__(self, is_min=True):\n        self.data = []\n        self.is_min = is_min\n\n    def push(self, el):\n        if not self.is_min:\n            el = -el\n        heapq.heappush(self.data, el)\n\n    def pop(self):\n        el = heapq.heappop(self.data)\n        if not self.is_min:\n            el = -el\n        return el\n\n    def peek(self):\n        el = self.data[0]\n        if not self.is_min:\n            el = -el\n        return el\n\n    def count(self):\n        return len(self.data)\n\ndef running_median(stream):\n    left_heap = PriorityQueue(False)  # Max Priority Queue\n    right_heap = PriorityQueue()  # Min Priority Queue\n\n    for number in stream:\n        if left_heap.count() == 0:\n            left_heap.push(number)\n        elif left_heap.count() > right_heap.count():\n            if left_heap.peek() > number:\n                right_heap.push(left_heap.pop())\n                left_heap.push(number)\n            else:\n                right_heap.push(number)\n        else:\n            if right_heap.peek() < number:\n                left_heap.push(right_heap.pop())\n                right_heap.push(number)\n            else:\n                left_heap.push(number)\n        if left_heap.count() > right_heap.count():\n            print(left_heap.peek())\n        else:\n            print((left_heap.peek() + right_heap.peek()) / 2)",
+            "explanation": "Using 2 heaps (max and min Priority Queues) balance the left and right side of the stream.\n\n**Time Complexity:** `O(N LogN)`\n\n**Space Complexity:** `O(N)`"
+          }
+        ]
+      },
+      {
+        "id": 59,
+        "title": "Spiral Matrix",
+        "category": "Other",
+        "description": "Given a matrix of `m x n` elements (m rows, n columns), return all elements of the matrix in spiral order.",
+        "sampleInput": "[[ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ]]",
+        "sampleOutput": "[1, 2, 3, 6, 9, 8, 7, 4, 5]",
+        "difficulty": "Medium",
+        "stdin": "[[ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ]]",
+        "targetStdout": "[1, 2, 3, 6, 9, 8, 7, 4, 5]",
+        "solution": [
+            {
+                "code": "def spiral_matrix(matrix):\n    n = len(matrix)\n    if n == 0:\n        return []\n\n    m = len(matrix[0])\n    if m == 0:\n        return []\n\n    total = n * m\n    res = []\n\n    n -= 1\n    xDir, yDir = 1, 1\n    x, y = 0, -1\n\n    while len(res) < total:\n        for i in range(m):\n            y += yDir\n            res.append(matrix[x][y])\n        m -= 1 # decrease horizontal moving steps\n        yDir *= -1 # change the Y direction\n\n        for i in range(n):\n            x += xDir\n            res.append(matrix[x][y])\n        n -= 1 # decrease vertical moving steps\n        xDir *= -1 # change the Y direction\n\n    return res",
+                "explanation": "Simulate spiral moving, start from `(0,0)` and when a border is reached change the X or Y direction.\n\n**Time Complexity:** `O(N*M)`\n\n**Space Complexity:** `O(N*M)`"
+            }
+        ]
+    }
+]

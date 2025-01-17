@@ -1,0 +1,159 @@
+[
+    {
+        "id": 70,
+        "title": "Encoding string",
+        "category": "Strings",
+        "description": "Run-length encoding is a fast and simple method of encoding strings.\nThe basic idea is to represent repeated successive characters as a single count and character.\nImplement run-length encoding and decoding. You can assume the string to be encoded have no digits and consists solely of alphabetic characters.\nYou can assume the string to be decoded is valid.",
+        "sampleInput": "AAAABBBCCDAA",
+        "sampleOutput": "4A3B2C1D2A",
+        "difficulty": "Easy",
+        "stdin": "'AAAABBBCCDAA'",
+        "targetStdout": "'4A3B2C1D2A'",
+        "solution": [
+          {
+            "code": "def encoding(word):\n    n = len(word)\n    if n == 0:\n        return ''\n\n    letter = word[0]\n    length = 1\n    res = ''\n\n    for i in range(1, n):\n        if word[i] == letter:\n            length += 1\n        else:\n            res += str(length) + letter\n            letter = word[i]\n            length = 1\n\n    res += str(length) + letter\n\n    return res",
+            "explanation": "Simple solution, just iterate the string and count.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+          }
+        ]
+      },
+      {
+        "id": 71,
+        "title": "Longest Common Prefix",
+        "category": "Strings",
+        "description": "Write a function to find the longest common prefix string amongst an array of strings.\nIf there is no common prefix, return an empty string ''. Many solutions for this problem exist (Divide and Conquer, Trie, etc) but this is the simplest and the fastest one. Use the first string as LCP and iterate the rest in each step compare it with another one.",
+        "sampleInput": "['flower', 'flow', 'flight']",
+        "sampleOutput": "'fl'",
+        "difficulty": "Easy",
+        "stdin": "['flower', 'flow', 'flight']",
+        "targetStdout": "'fl'",
+        "solution": [
+          {
+            "code": "def longest_common_prefix(strs):\n    n = len(strs)\n    if n == 0:\n        return ''\n\n    lcp = strs[0]\n    # instead of string manipulations, manipulate with the last common index\n    lcp_idx = len(lcp)\n\n    for i in range(1, n):\n        lcp_idx = min(lcp_idx, len(strs[i]))\n\n        for j in range(lcp_idx):\n            if lcp[j] != strs[i][j]:\n                lcp_idx = j\n                break\n\n    return lcp[:lcp_idx]",
+            "explanation": "The simplest and the fastest solution. Use the first string as Longest Common Prefix (LCP) and iterate the rest while comparing each with the LCP.\n\n**Time Complexity:** `O(N*A)`  , N = number of strings, A = average chars, or simplest notation `O(S)` = total number of chars\n\n**Space Complexity:** `O(1)`"
+          }
+        ]
+},
+{
+    "id": 72,
+    "title": "Longest Palindromic Substring",
+    "category": "Strings",
+    "description": "Find the length of the longest palindromic substring.",
+    "sampleInput": "google",
+    "sampleOutput": "4",
+    "difficulty": "Medium",
+    "stdin": "google",
+    "targetStdout": "4",
+    "solution": [
+      {
+        "code": "def longest_palindromic_substring(s):\n    n = len(s)\n    longest = 1\n\n    for i in range(n):\n        # search for palindrom with odd number of chars\n        count_odd = compare_both_sides(s, 1, i - 1, i + 1)\n\n        # search for palindrom with even number of chars\n        count_even = compare_both_sides(s, 0, i - 1, i)\n\n        # save the longest\n        longest = max(longest, count_odd, count_even)\n\n    return longest\n\ndef compare_both_sides(s, count, left, right):\n    # helper method to avoid duplicate code\n    n = len(s)\n\n    while (left >= 0) and (right < n) and (s[left] == s[right]):\n        count += 2\n        left -= 1\n        right += 1\n\n    return count",
+        "explanation": "Simple algorithm, for each position compare left and right side and count the length of matching.\n\n**Time Complexity:** `O(N^2)`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "title": "Reverse string",
+    "category": "Strings",
+    "description": "Reverse string, in linear time complexity.",
+    "sampleInput": "i like this program very much",
+    "sampleOutput": "hcum yrev margorp siht ekil i",
+    "difficulty": "Easy",
+    "stdin": "'i like this program very much'",
+    "targetStdout": "hcum yrev margorp siht ekil i",
+    "solution": [
+      {
+        "code": "def reverse_sentence(sentence):\n    arr = [c for c in sentence] # or just arr = list(sentence)\n    start = 0\n    end = len(arr) - 1\n\n    while start < end:\n        # reverse the array from the start index to the end index by\n        # swaping each char with the pair from the other part of the array\n        swap(arr, start, end)\n        start += 1\n        end -= 1\n\n    return ''.join(arr)\n\ndef swap(arr, i, j):\n    # swapping two elements from a same array\n    arr[i], arr[j] = arr[j], arr[i]\n    '''same as\n    temp = arr[i]\n    arr[i] = arr[j]\n    arr[j] = temp\n    '''",
+        "explanation": "Reverse the whole sentence by swapping pair letters in-place (first with last, second with second from the end, etc).\nIn Python, the string manipulation operations are too slow (string is immutable), because of that we need to convert the string into array.\nIn C/C++, the Space complexity will be `O(1)` (because the strings are just arrays with chars).\nExist 2 more \"Pythonic\" ways of reversing strings/arrays:\n- reversed_str = reversed(str)\n- reversed_str = str[::-1]\nBut I wanted to show how to implement a reverse algorithm step by step so someone will know how to implement it in other languages.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "title": "Reverse Vowels",
+    "category": "Strings",
+    "description": "Given a text string, create and return a new string constructed by finding all its vowels (for simplicity, in this problem vowels are the letters in the string 'aeiouAEIOU') and reversing their order, while keeping all non-vowel characters exactly as they were in their original positions.",
+    "sampleInput": "Hello world",
+    "sampleOutput": "Hollo werld",
+    "difficulty": "Easy",
+    "stdin": "Hello world",
+    "targetStdout": "Hollo werld",
+    "solution": [
+      {
+        "code": "def reverse_vowels(sentence):\n    arr = [c for c in sentence] # or just arr = list(sentence)\n\n    vowels = {\n        'a': True, 'A': True,\n        'e': True, 'E': True,\n        'i': True, 'I': True,\n        'o': True, 'O': True,\n        'u': True, 'U': True\n    }\n\n    left = 0\n    right = len(arr) - 1\n\n    while True:\n        # find a vowel from left\n        while left < right:\n            if arr[left] in vowels:\n                break\n            left += 1\n\n        # find a vowel from right\n        while left < right:\n            if arr[right] in vowels:\n                break\n            right -= 1\n\n        if left >= right:\n            # in this case, there are only 1 or 0 vowels\n            # so this is the end of the algorithm, no need from more reversing\n            break\n\n        # swap the vowels\n        arr[left], arr[right] = arr[right], arr[left]\n\n        left += 1\n        right -= 1\n\n    return ''.join(arr)",
+        "explanation": "Simple solution, find a vowel from left and swap it with a vowel from right.\nIn Python, the string manipulation operations are too slow (string is immutable), because of that we need to convert the string into array.\nIn C/C++, the Space complexity will be `O(1)` (because the strings are just arrays with chars).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "title": "Reverse words in sentence",
+    "category": "Strings",
+    "description": "Reverse words in a given string, in linear time complexity.  \n\nFirst, find each word and reverse it (in place, by swapping the letters),\nafter all words are reversed, reverse the whole sentence (in place, by swapping the letters)\nand the first word will be last and will be in the original form.\nIn Python, the string manipulation operations are too slow (string is immutable), because of that we need to convert the string into array.\nIn C/C++, the Space complexity will be O(1) (because the strings are just arrays with chars).\n    **Time Complexity:** `O(N)`\n    **Space Complexity:** `O(N)`",
+    "sampleInput": "i like this program very much",
+    "sampleOutput": "much very program this like i",
+    "difficulty": "Medium",
+    "stdin": "i like this program very much",
+    "targetStdout": "much very program this like i",
+    "solution": [
+      {
+        "code": "def reverse_words_in_sentence(sentence):\n    arr = [c for c in sentence] # or just arr = list(sentence)\n    n = len(arr)\n    last_idx = n - 1\n    start = 0\n\n    # reverse all words\n    for i in range(n):\n        if arr[i] == ' ':\n            # in this moment we're sure that the word is complete\n            reverse_array(arr, start, i - 1)\n            start = i + 1\n    # reverse the last word\n    reverse_array(arr, start, last_idx)\n    # reverse the whole sentence\n    reverse_array(arr, 0, last_idx)\n\n    return ''.join(arr)\n\ndef reverse_array(arr, start, end):\n    # reverse the array from the start index to the end index\n    while start < end:\n        arr[start], arr[end] = arr[end], arr[start] # swap\n        start += 1\n        end -= 1",
+        "explanation": "None"
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "title": "Strong Password Checker",
+    "category": "Strings",
+    "description": "A password is considered strong if the below conditions are all met:\n- It has at least 6 characters and at most 20 characters.\n- It contains at least one lowercase letter, at least one uppercase letter, and at least one digit.\n- It does not contain three repeating characters in a row (i.e., \"...aaa...\" is weak, but \"...aa...a...\" is strong, assuming other conditions are met). Given a string password, return the minimum number of steps required to make password strong. if password is already strong, return 0.\n\nIn one step, you can:\n- Insert one character to password,\n- Delete one character from password, or\n- Replace one character of password with another character.",
+    "sampleInput": "a",
+    "sampleOutput": "5",
+    "difficulty": "Medium",
+    "stdin": "a",
+    "targetStdout": "5",
+    "solution": [
+      {
+        "code": "def strongPasswordChecker(password):\n    groups = []\n    length = len(password)\n    last = 0\n    lower = upper = digit = 0\n\n    for curr in range(length):\n        if password[curr].islower():\n            lower = 1\n        elif password[curr].isupper():\n            upper = 1\n        elif password[curr].isdigit():\n            digit = 1\n\n        if password[last] != password[curr]:\n            groups.append(curr - last);\n            last = curr\n\n    groups.append(curr + 1 - last);\n    lud = lower + upper + digit\n    addSteps = 0\n\n    # adding: under 6 chars\n    if length < 6:\n        if length == 5 and groups[0] == 5:\n            addSteps = 2 # add + change, or add + add - it's same\n        else:\n            addSteps = 6 - length\n\n        ludLeft = 3 - lud\n        if addSteps < ludLeft:\n            addSteps = ludLeft\n\n        return addSteps\n\n    # deleting: over 20 chars\n    deleteSteps = 0\n    groupsLength = len(groups)\n    while length > 20:\n        found = False\n\n        for priority in range(3):\n            for gidx in range(groupsLength):\n                if groups[gidx] > 2 and groups[gidx] % 3 == priority:\n                    groups[gidx] -= 1\n                    found = True\n                    break\n            if found:\n                break\n\n        if not found:\n            lastGroupIdx = groupsLength - 1\n            groups[lastGroupIdx] -= 1\n            if groups[lastGroupIdx] == 0:\n                groups.pop(lastGroupIdx)\n                groupsLength -= 1\n\n        length -= 1\n        deleteSteps += 1\n\n    # changing: between 6 and 20 chars\n    changeSteps = 0\n\n    for gidx in range(groupsLength):\n        changeSteps += groups[gidx] // 3\n\n    ludLeft = 3 - lud\n    if changeSteps < ludLeft:\n        changeSteps = ludLeft\n\n    return deleteSteps + changeSteps",
+        "explanation": "The code consists of three main steps:\n\n1. Initializing variables and calculating group lengths for lowercase, uppercase, and digit characters.\n2. Handling the adding, deleting, and changing of characters based on the length of the input password and the character groups.\n3. Calculating the total number of steps required to make the password strong based on the above operations.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "title": "Swap the frst and the last word",
+    "category": "Strings",
+    "description": "Given an string, you need to swap the first and last word in linear time.\nEverything between should stay in same order.",
+    "sampleInput": "'i like this program very much'",
+    "sampleOutput": "'much like this program very i'",
+    "difficulty": "Medium",
+    "stdin": "i like this program very much",
+    "targetStdout": "much like this program very i",
+    "solution": [
+      {
+        "code": "def swap_first_and_last_word(sentence):\n    arr = [c for c in sentence] # or just arr = list(sentence)\n    first_idx = 0\n    last_idx = len(arr) - 1\n\n    # reverse the whole array, in this way I'll change the first and the last word\n    reverse_array(arr, first_idx, last_idx)\n\n    # find positions of the first and the last space char\n    first_space = first_idx\n    while arr[first_space] != ' ':\n        first_space += 1\n\n    last_space = last_idx\n    while arr[last_space] != ' ':\n        last_space -= 1\n\n    # reverse only the first word\n    reverse_array(arr, first_idx, first_space - 1)\n    # reverse only the last word\n    reverse_array(arr, last_space + 1, last_idx)\n    # reverse everything between (with this reversing, all words between will have the same order as the starting one)\n    reverse_array(arr, first_space + 1, last_space - 1)\n\n    return ''.join(arr)\n\ndef reverse_array(arr, start, end):\n    # reverse the array from the start index to the end index\n    while start < end:\n        arr[start], arr[end] = arr[end], arr[start] # swap\n        start += 1\n        end -= 1\n",
+        "explanation": "Reverse the whole string, after that reverse only first and only last word,\nin the end reverse everything between first and last word. (using IN-PLACE reversing)\nIn Python, the string manipulation operations are too slow (string is immutable), because of that we need to convert the string into array.\nIn C/C++, the Space complexity will be O(1) (because the strings are just arrays with chars).\n\n**Time complexity:** `O(N)` , `O(N + N)` = `O(2 * N)` = `O(N)`\n\n**Space Complexity:** `O(N`)"
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "title": "ZigZag Conversion",
+    "category": "Strings",
+    "description": "The string `\"PAYPALISHIRING\"` is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)\n\nP   A   H   N\nA P L S I I G\nY   I   R\nAnd then read line by line: 'PAHNAPLSIIGYIR'",
+    "sampleInput": "s = 'PAYPALISHIRING', num_rows = 3",
+    "sampleOutput": "'PAHNAPLSIIGYIR'",
+    "difficulty": "Medium",
+    "stdin": "'PAYPALISHIRING' 3",
+    "targetStdout": "PAHNAPLSIIGYIR",
+    "solution": [
+      {
+        "code": "def convert(s, num_rows):\n    if num_rows == 1:\n        return s\n\n    n = len(s)\n    res = ''\n    cycle = 2 * (num_rows - 1)\n\n    for i in range(0, num_rows):\n        steps = cycle - 2 * i\n        if (i == 0) or (i == num_rows - 1):\n            # If first or last row, make a whole cycle\n            steps = cycle\n\n        j = i\n        while j < n:\n            res += s[j]\n            j += steps\n            if (i > 0) and (i < num_rows - 1):\n                # Change the steps if not first or last row\n                steps = cycle - steps\n\n    return res",
+        "explanation": "Go row by row and using the steps logic build the new string by jumping chars.\nMiddle rows have 2 times more elements than the first and last row.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+      },
+      {
+        "code": "def convert_2(word, numRows):\n    numLetters = len(word)\n    bucket = [\"\"] * numRows\n    fullCycle = 2 * (numRows - 1)\n    if numRows == 1:\n        fullCycle = 1\n\n    for pos in range(0, numLetters):\n        posCycle = pos % fullCycle\n\n        if posCycle >= numRows:\n            posCycle = fullCycle - posCycle\n\n        bucket[posCycle] += word[pos]\n\n    result = \"\"\n    for part in bucket:\n        result += part\n\n    return result",
+        "explanation": "Collect all parts in separate bucket, in the end merge these buckets.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+      }
+    ]
+  }
+]

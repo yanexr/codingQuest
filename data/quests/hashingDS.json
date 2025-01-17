@@ -1,0 +1,165 @@
+[
+    {
+        "id": 30,
+        "title": "Anagram Indices",
+        "category": "Hashing DS",
+        "description": "Given a word and a string S, find all starting indices in S which are anagrams of word.\n(An anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once)",
+        "sampleInput": "s='abxaba', word='ab'",
+        "sampleOutput": "[0, 3, 4]",
+        "difficulty": "Medium",
+        "stdin": "abxaba ab",
+        "targetStdout": "[0, 3, 4]",
+        "solution": [
+          {
+            "code": "class LettersCounter:\n    def __init__(self):\n        self.__letters = {}\n\n    def __create_if_not_exist(self, letter):\n        ''' helper method for creating a new field for the letter '''\n        if letter not in self.__letters:\n            self.__letters[letter] = 0\n\n    def __delete_if_zero_letters(self, letter):\n        ''' helper deleting a letter from dictionary '''\n        if self.__letters[letter] == 0:\n            del self.__letters[letter]\n\n    def add_letter(self, letter):\n        ''' increment the number of letters '''\n        self.__create_if_not_exist(letter)\n        self.__letters[letter] += 1\n        self.__delete_if_zero_letters(letter)\n\n    def remove_letter(self, letter):\n        ''' decrement the number of letters '''\n        self.__create_if_not_exist(letter)\n        self.__letters[letter] -= 1\n        self.__delete_if_zero_letters(letter)\n\n    def is_empty(self):\n        return len(self.__letters) == 0\n\ndef anagram_indices(s, word):\n    n = len(s)\n    w = len(word)\n    res = []\n\n    if n < w:\n        return res\n\n    counter = LettersCounter()\n\n    # add all letters from the original word\n    for letter in word:\n        counter.add_letter(letter)\n\n    # remove first w letters from s string\n    for i in range(w):\n        counter.remove_letter(s[i])\n\n    if counter.is_empty():\n        res.append(0)\n\n    for i in range(w, n):\n        # continue with the same logic, add letters from front and remove from the current index\n        counter.add_letter(s[i - w])\n        counter.remove_letter(s[i])\n\n        if counter.is_empty():\n            # if there are 0 elements into dictionary, then the word is anagram\n            res.append(i - w + 1)\n\n    return res",
+            "explanation": "Create a structure for counting the ferquency of letters (the structure is a simple dictionary).\nSimilar to sliding window solution, add letters into the structure from the front of sliding window\nand remove from the back of sliding window.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(W)`, W = length of Word"
+          }
+        ]
+      },
+      {
+        "id": 31,
+        "title": "Count Positives",
+        "category": "Hashing DS",
+        "description": "Given several numbers, count how many different results bigger or equal than `0` can you produce by only using addition (+) and substraction (-). All the numbers must be used.",
+        "sampleInput": "[2, 3, 1]",
+        "sampleOutput": "4",
+        "difficulty": "Medium",
+        "stdin": "[2, 3, 1]",
+        "targetStdout": "4",
+        "solution": [
+          {
+            "code": "def count_positives(numbers):\n    results = set()\n    results.add(0)\n\n    # make all combinations\n    for num in numbers:\n        temp = set()    # use a temporary hashset for the newest results\n        for res in results:\n            temp.add(res + num)\n            temp.add(res - num)\n        results = temp  # replace the results\n\n    # count unique positives\n    count = 0\n    for res in results:\n        if res >= 0:\n            count += 1\n\n    return count",
+            "explanation": "Use hashset and make all combinations.\n\n**Time Complexity:**  O(2^N)  , I'm not sure how to compute the real complexity, but it's TOO MUCH faster than 2^N\n\n**Space Complexity:**  O(2^N)"
+          }
+        ]
+      },
+      {
+        "id": 32,
+        "title": "Find duplicates",
+        "category": "Hashing DS",
+        "description": "Find all duplicates in an array where all elements are positive (>0) and the biggest element in the array could be equal to the length of array.\nNote: solve it in one iteration.",
+        "sampleInput": "[1, 1, 1, 1]",
+        "sampleOutput": "[1]",
+        "difficulty": "Easy",
+        "stdin": "[1, 1, 1, 1]",
+        "targetStdout": "[1]",
+        "solution": [
+          {
+            "code": "def find_duplicates(arr):\n    n = len(arr)\n    duplicates = set()\n\n    for i in range(n):\n        idx = abs(arr[i]) - 1\n        val = arr[idx]\n\n        if val > 0:\n            # mark element as found for the first time\n            arr[idx] = -val\n        else:\n            # this element is a duplicate\n            duplicates.add(idx + 1)\n\n    return duplicates",
+            "explanation": "Each value has its own position/index in the array, mark the value on that position as negative when the element is found for the first time.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(D)` , array (in this case set) to save all duplicates"
+          },
+          {
+            "code": "def find_duplicates_2(arr):\n    n = len(arr)\n    duplicates = set()\n    elements = set()\n\n    for i in range(n):\n        if arr[i] in duplicates:\n            # this element is already found as duplicate\n            continue\n\n        if arr[i] in elements:\n            # a duplicate is found\n            duplicates.add(arr[i])\n            elements.remove(arr[i])\n        else:\n            # a new number\n            elements.add(arr[i])\n\n    return duplicates",
+            "explanation": "In the second solution 2 hashsets are used, one to check if already exists element like current and the other has same functionality as the hashset in the first solution.\n* This solution is for all kind of numbers (not as the previous solution, only for positive numbers or smaller elements than the length of array).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(D)`"
+          }
+        ]
+      },
+      {
+        "id": 33,
+        "title": "Find pairs with sum K",
+        "category": "Hashing DS",
+        "description": "Given an array, find all pairs which sum is equal to `K`.",
+        "sampleInput": "[1, 2, 2, 3, 4, 5, 5, 5, 6, 7, 8, 8, 9], 10",
+        "sampleOutput": "[(1, 9), (2, 8), (3, 7), (4, 6), (5, 5)]",
+        "difficulty": "Easy",
+        "stdin": "[1, 2, 2, 3, 4, 5, 5, 5, 6, 7, 8, 8, 9] 10",
+        "targetStdout": "[(1, 9), (2, 8), (3, 7), (4, 6), (5, 5)]",
+        "solution": [
+          {
+            "code": "def find_pairs(arr, K):\n    complements = set()\n    pair_complements = set()\n\n    for el in arr:\n        c = K - el\n        if c in complements:\n            pair_complements.add(c)\n        complements.add(el)\n\n    pairs = []\n    for c in pair_complements:\n        pairs.append((c, K - c))\n\n    return pairs\n\n# Test 1\n# Correct result => [(1, 9), (2, 8), (3, 7), (4, 6), (5, 5)]\nprint(find_pairs([1, 2, 2, 3, 4, 5, 5, 5, 6, 7, 8, 8, 9], 10)",
+            "explanation": "Save numbers as complements in a hashset and for each number search for the pair complement (K-number).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+          }
+        ]
+      },
+      {
+        "id": 34,
+        "title": "Group Anagrams",
+        "category": "Hashing DS",
+        "description": "Given an array of strings, group anagrams together.\n(An anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once)",
+        "sampleInput": "['eat', 'tea', 'tan', 'ate', 'nat', 'bat']",
+        "sampleOutput": "[['eat', 'ate', 'tea'], ['tan', 'nat'], ['bat']]",
+        "difficulty": "Easy",
+        "stdin": "['eat', 'tea', 'tan', 'ate', 'nat', 'bat']",
+        "targetStdout": "[['eat', 'ate', 'tea'], ['tan', 'nat'], ['bat']]",
+        "solution": [
+          {
+            "code": "def group_anagrams(strs):\n    anagrams = {}\n\n    for st in strs:\n        # or hashable_object = hash_1(st)\n        hashable_object = hash_2(st)\n\n        if hashable_object not in anagrams:\n            anagrams[hashable_object] = []\n        anagrams[hashable_object].append(st)\n\n    return [anagrams[res] for res in anagrams]",
+            "explanation": "This problem can be solved using a dictionary (hash map), but in order to use a dictinary you'll need to find\na way to calculate the keys for all strings. This is a same solution but 2 different hash functions.\n\nSort the letters from the strings, and use the sorted letters as key.\n\n**Time Complexity:** `O(N * KLogK)`    , N = number of strings, K = number of characters (chars in the string with most chars)\n\n**Space Complexity:** `O(N)`"
+          },
+          {
+            "code": "def hash_1(st):\n    chars = list(st)\n    chars.sort()\n    # or you can use a string as hash, ''.join(chars)\n    return tuple(chars)\n\ndef hash_2(st):\n    all_letters = [0]*26\n    ord_a = 97 # ord('a')\n    for c in st:\n        all_letters[ord(c) - ord_a] += 1\n    # or you can use a string as hash, '<some non-digit character>'.join(all_letters), example: ' '.join(all_letters)\n    return tuple(all_letters)",
+            "explanation": "There are two hash functions provided here:\n\n**Hash Function 1 (hash_1):**\n  - Sorts the letters from the strings and uses the sorted letters as key.\n\n**Time Complexity:** `O(N * KLogK)`    , N = number of strings, K = number of characters (chars in the string with most chars)\n\n**Space Complexity:** `O(N)`\n\n**Hash Function 2 (hash_2):**\n  - Uses a letter counter (some kind of counting sort).\n\n**Time Complexity:** `O(N * K)`    , O(N * K * 26) = O(N * K), if all of the strings have several chars (less than ~8) the first hash function is better.\n\n**Space Complexity:** `O(N)`"
+          }
+        ]
+      },
+      {
+        "id": 35,
+        "title": "Longest Consecutive Sequence (Largest Range)",
+        "category": "Hashing DS",
+        "description": "Given an unsorted array of integers, find first and last element\nof the longest consecutive elements sequence.",
+        "sampleInput": "[1, 11, 3, 0, 15, 5, 2, 4, 10, 7, 12, 6]",
+        "sampleOutput": "[0, 7]",
+        "difficulty": "Medium",
+        "stdin": "[0, 9, 19, -1, 18, 17, 2, 10, 3, 12, 5, 16, 4, 11, 8, 7, 6, 15, 12, 12, 2, 1, 6, 13, 14]",
+        "targetStdout": "[-1, 19]",
+        "solution": [
+          {
+            "code": "def largest_range(array):\n    visited = {}\n    for el in array:\n        visited[el] = False\n\n    max_range = [array[0], array[0]]\n    for el in array:\n        if visited[el]:\n            # this element is visited in another range, no need from searching again for this range\n            continue\n\n        visited[el] = True\n\n        # go left\n        left_border = el - 1\n        while left_border in visited:\n            visited[left_border] = True\n            left_border -= 1\n        # update the left_border because that number doesn't exist\n        left_border += 1\n\n        # go right\n        right_border = el + 1\n        while right_border in visited:\n            visited[right_border] = True\n            right_border += 1\n        # update the right_border because that number doesn't exist\n        right_border -= 1\n\n        if (max_range[1] - max_range[0]) < (right_border - left_border):\n            max_range = [left_border, right_border]\n\n    return max_range",
+            "explanation": "But this solution is faster, it uses a dictionary (HashMap).\nFor each number tries to find the smaller and the bigger consequence numbers, and marks them as visited.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N`)"
+          }
+        ]
+      },
+      {
+        "id": 36,
+        "title": "Longest Substring With k Distinct Characters",
+        "category": "Hashing DS",
+        "description": "Given an integer `k` and a string `s`, find the length of the longest substring that contains at most `k` distinct characters.",
+        "sampleInput": "s = 'abcba', k = 2",
+        "sampleOutput": "3",
+        "difficulty": "Easy",
+        "stdin": "abcba 2",
+        "targetStdout": "3",
+        "solution": [
+          {
+            "code": "def longest_substring_with_distinct_characters(s, k):\n    letters = {}\n    longest = 0\n    length = 0\n\n    for i in range(len(s)):\n        if s[i] in letters:\n            # if this letter exists then only increase the counter and length\n            letters[s[i]] += 1\n            length += 1\n        else:\n            # if this letter doesn't exist then remove all distinct letters from the front\n            # so the count of distinct letters will be k-1\n            while len(letters) == k:\n                firstLetter = s[i - length]\n                letters[firstLetter] -= 1 # decrease the counter\n                if letters[firstLetter] == 0:\n                    # remove this letter from the dictionary because\n                    # in the susbtring there are no letters like this\n                    del letters[firstLetter]\n                length -= 1\n\n            # add the new letter in the dictionary\n            letters[s[i]] = 1\n            length += 1\n\n        # check if this length is the longest one\n        longest = max(longest, length)\n\n    return longest\n\n# Test 1\n# Correct result => 3\nprint(longest_substring_with_distinct_characters('abcba', 2))",
+            "explanation": "Simple solution (like sliding window or queue, add to the end and remove from the front).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+          }
+        ]
+      },
+      {
+        "id": 37,
+        "title": "Longest Substring Without Repeating Characters",
+        "category": "Hashing DS",
+        "description": "Given a string, find the length of the longest substring without repeating characters.",
+        "sampleInput": "abcabcbb",
+        "sampleOutput": "3",
+        "difficulty": "Easy",
+        "stdin": "'abcabcbb'",
+        "targetStdout": "3",
+        "solution": [
+          {
+            "code": "def length_of_longest_substring(s):\n    unique_chars = set()\n    max_length = 0\n    left = 0\n    n = len(s)\n\n    for i in range(n):\n        while s[i] in unique_chars:\n            # remove till the current char is unique\n            unique_chars.remove(s[left])\n            left += 1\n\n        # in this moment you're sure that the current char is unique\n        unique_chars.add(s[i])\n        max_length = max(max_length, i - left + 1)\n\n    return max_length\n\n# Test 1\n# Correct result => 3\nprint(length_of_longest_substring('abcabcbb'))\n\n# Test 2\n# Correct result => 1\nprint(length_of_longest_substring('bbbbb'))",
+            "explanation": "Simple string iteration, use hashset to save unique characters.\nIf the current character exists in the set then move the left index till the one\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N`)"
+          }
+        ]
+      },
+      {
+        "id": 38,
+        "title": "Perfect Rectangle",
+        "category": "Hashing DS",
+        "description": "Given N axis-aligned rectangles where `N > 0`, determine if they all together form an exact cover of a rectangular region.\nEach rectangle is represented as a bottom-left point and a top-right point. For example, a unit square is represented as `[1,1,2,2]`.\n(coordinate of bottom-left point is `(1, 1)` and top-right point is `(2, 2)`).",
+        "sampleInput": "[1, 1, 3, 3], [3, 1, 4, 2], [3, 2, 4, 4], [1, 3, 2, 4], [2, 3, 3, 4]",
+        "sampleOutput": "True",
+        "difficulty": "Medium",
+        "stdin": "[1, 1, 3, 3], [3, 1, 4, 2], [3, 2, 4, 4], [1, 3, 2, 4], [2, 3, 3, 4]",
+        "targetStdout": "True",
+        "solution": [
+          {
+            "code": "import math\n\ndef is_perfect_rectangle(rectangles):\n    areas_sum = 0\n    all_points = set()\n\n    for rect in rectangles:\n        # sum the areas of all rectangles\n        areas_sum += (rect[2] - rect[0]) * (rect[3] - rect[1])\n\n        # find all points of the rectangle and check if they already exist\n        rect_points = [\n            (rect[0], rect[1]),   # left bottom\n            (rect[0], rect[3]),   # left top\n            (rect[2], rect[3]),   # right top\n            (rect[2], rect[1])    # right bottom\n        ]\n\n        for point in rect_points:\n            if point in all_points:\n                all_points.remove(point)\n            else:\n                all_points.add(point)\n\n    # if we want a perfect rectangle then the rectangle must have 4 unique points\n    if len(all_points) != 4:\n        return False\n\n    # find the bounding rectangle coordinates (minX, minY, maxX, maxY)\n    bounding_rectangle = [math.inf, math.inf, -math.inf, -math.inf]\n    for point in all_points:\n        bounding_rectangle = [\n            min(bounding_rectangle[0], point[0]),\n            min(bounding_rectangle[1], point[1]),\n            max(bounding_rectangle[2], point[0]),\n            max(bounding_rectangle[3], point[1])\n        ]\n\n    # calculate the area of bounding rectangle\n    bounding_rectangle_area = (bounding_rectangle[2] - bounding_rectangle[0]) * (bounding_rectangle[3] - bounding_rectangle[1])\n\n    # to see if there are overlapping, compare the sum of areas with the final rectangle area\n    return areas_sum == bounding_rectangle_area",
+            "explanation": "Check if 4 unique points exist. If 4 unique points exist, then\ncheck if the sum of all rectangles is equal to the final rectangle.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N`)"
+          }
+        ]
+      }
+
+
+]

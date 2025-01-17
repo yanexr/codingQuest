@@ -1,0 +1,176 @@
+[
+    {
+        "id": 80,
+        "title": "Diameter of Binary Tree",
+        "category": "Trees",
+        "description": "Given a binary tree, you need to compute the length of the diameter of the tree.\nThe diameter of a binary tree is the length of the longest path between any two nodes in a tree.\nThis path may or may not pass through the root.\nNote: The length of path between two nodes is represented by the number of nodes.",
+        "sampleInput": "3\n      / \\\n     1   4\n      \\   \\\n       2   5\n      /\n     7",
+        "sampleOutput": "6",
+        "difficulty": "Medium",
+        "stdin": "5 [3 [2 4 [1 null null] 8] 6]",
+        "targetStdout": "5",
+        "solution": [
+            {
+                "code": "def diameter(root):\n  return find_diameter(root)[1]\n\ndef find_diameter(root):\n    ''' returns (max branch length, max diameter) '''\n    if not root:\n        return 0, 0\n\n    # traverse left and right subtrees\n    left, right = find_diameter(root.left), find_diameter(root.right)\n\n    # return the max branch from the left and right subtrees plus the current node\n    # and find the max diameter till now (using the current node and the max left and right subtree branches)\n    return max(left[0], right[0]) + 1, max(left[1], right[1], left[0] + right[0] + 1)",
+                "explanation": "Traverse the tree and keep/return information about the longest/max branch and longest/max diameter.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`        , because of the recursion stack (but this is if the tree is one branch), `O(LogN)` if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 81,
+        "title": "Kth Smallest Element in a BST",
+        "category": "Trees",
+        "description": "Given a binary search tree, write a function `kthSmallest` to find the kth smallest element in it",
+        "sampleInput": "3, k = 1",
+        "sampleOutput": "1",
+        "difficulty": "Medium",
+        "stdin": "5, k = 3",
+        "targetStdout": "3",
+        "solution": [
+            {
+                "code": "def find_kth_smallest_node_bst(root, k):\n    return search(root, k)[1]\n\ndef search(node, k):\n    if node is None:\n        return (k, None)\n\n    # check left\n    left = search(node.left, k)\n    if left[0] == 0:\n        return left\n\n    # check current node\n    k = left[0] - 1\n    if k == 0:\n        return (k, node)\n\n    # check right\n    return search(node.right, k)",
+                "explanation": "Traverse Inorder the tree (Type of depth first traversal: left, root, right) and count the nodes.\nWhen the Kth node is found, return that node.\n\n**Time Complexity:** O(N)\n\n**Space Complexity:** O(N), because of the recursion stack (but this is if the tree is one branch), O(LogN) if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 82,
+        "title": "Find max branch sum",
+        "category": "Trees",
+        "description": "Wrie a function that takes a binary tree and returns its max branch (branch is \"root to leaf path\") sum.",
+        "sampleInput": "1, 2, 3, 4, 5, 6, 7",
+        "sampleOutput": "11",
+        "difficulty": "Easy",
+        "stdin": "1, 2, 3, 4, 5, 6, 7",
+        "targetStdout": "11",
+        "solution": [
+            {
+                "code": "from tree_helpers import TreeNode\n\ndef max_branch_sum(node):\n    if node is None:\n        return 0\n\n    # take the max left subbranch sum and add the current node value\n    left_max_sum = max_branch_sum(node.left) + node.val\n    # take the max right subbranch sum and add the current node value\n    right_max_sum = max_branch_sum(node.right) + node.val\n\n    # return the bigger sum\n    return max(left_max_sum, right_max_sum)",
+                "explanation": "Traverse the tree and in each node compare the left and right subbranch sum, and take the bigger one.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`        , because of the recursion stack (but this is the tree is one branch), `O(LogN)` if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 83,
+        "title": "Find max path sum",
+        "category": "Trees",
+        "description": "Wrie a function that takes a Binary Tree and returns its max path sum.\n\nInput:\n        1\n       / \\\n      2   3\n     / \\ /     4  5 6  7\nOutput: 18\nOutput explanation: 5 -> 2 -> 1 -> 3 -> 7\n\nInput:\n       -1\n       / \\ /     -2   3\n     / \\ /     -4 -5 2  5\nOutput: 10\nOutput explanation: 2 -> 3 -> 5",
+        "sampleInput": "        1       / \\      2   3     / \\ /     4  5 6  7",
+        "sampleOutput": "18",
+        "difficulty": "Medium",
+        "stdin": "TreeNode(1, TreeNode(2, TreeNode(4), TreeNode(5)), TreeNode(3, TreeNode(6), TreeNode(7)))",
+        "targetStdout": "18",
+        "solution": [
+            {
+                "code": "def max_path_sum(tree):\n    return find_max_path_sum(tree)[0]\n\ndef find_max_path_sum(node):\n    if node is None:\n        return (0, 0)\n\n    # get the result from the left subtree\n    left_result = find_max_path_sum(node.left)\n    # get the result from the right subtree\n    right_result = find_max_path_sum(node.right)\n\n    # create a new path by merging the max left and right subpaths\n    current_path = left_result[1] + node.val + right_result[1]\n    # find the max path till now, comparing the new path, max path from the left and right subtree\n    max_path = max(left_result[0], current_path, right_result[0])\n    # find the max subpath, min value for a subpath sum is 0\n    max_subpath = max(left_result[1] + node.val, right_result[1] + node.val, node.val, 0)\n\n    return (max_path, max_subpath)",
+                "explanation": "Traverse the tree and in each node compare create a new path where the left and right max subpaths are merging in the current node.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`        , because of the recursion stack (but this is the tree is one branch), `O(LogN)` if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 84,
+        "title": "Find second largest node (not search tree)",
+        "category": "Trees",
+        "description": "Given the root to a tree (not bst), find the second largest node in the tree.",
+        "sampleInput": "tree = TreeNode(1, TreeNode(5, TreeNode(2), TreeNode(8)), TreeNode(4, TreeNode(12), TreeNode(7)))",
+        "sampleOutput": "8",
+        "difficulty": "Medium",
+        "stdin": "1 5 2 8 4 12 7",
+        "targetStdout": "8",
+        "solution": [
+            {
+                "code": "def find_second_largest(root):\n    arr = [TreeNode(-math.inf), TreeNode(-math.inf)]\n    traverse_tree(root, arr)\n    if arr[1] == -math.inf:\n        # the tree has 0 or 1 elements\n        return None\n    return arr[1]\n\ndef traverse_tree(node, arr):\n    if node == None:\n        return\n\n    if arr[0].val < node.val:\n        arr[1] = arr[0]\n        arr[0] = node\n    elif arr[1].val < node.val:\n        arr[1] = node\n\n    # search left\n    traverse_tree(node.left, arr)\n    # search right\n    traverse_tree(node.right, arr)",
+                "explanation": "Traverse tree and compare the current value with the saved 2 values.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`, because of the recursion stack (but this is the tree is one branch), `O(LogN)` if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 85,
+        "title": "Find second largest node in bst",
+        "category": "Trees",
+        "description": "Given the root to a binary search tree, find the second largest node in the tree. There are 4 possible cases (see the details in the code). Only 1 branch is searched to the end (leaf), not the whole tree.",
+        "sampleInput": "TreeNode(5, TreeNode(3, TreeNode(1), TreeNode(4)), TreeNode(8, TreeNode(7), TreeNode(12, TreeNode(10, TreeNode(13))))), TreeNode(5, TreeNode(3, TreeNode(1), TreeNode(4)), TreeNode(8, TreeNode(7), TreeNode(12))), TreeNode(5, TreeNode(3, TreeNode(1), TreeNode(4))), TreeNode(5, TreeNode(3, TreeNode(1), TreeNode(4)), TreeNode(8, TreeNode(6, None, TreeNode(7)))), TreeNode(5, TreeNode(3, TreeNode(1), TreeNode(4)), TreeNode(8, TreeNode(7), TreeNode(12, TreeNode(9, None, TreeNode(10, None, TreeNode(11))))))",
+        "sampleOutput": "10, 8, 4, 7, 11",
+        "difficulty": "Medium",
+        "stdin": "TreeNode(5, TreeNode(3, TreeNode(1), TreeNode(4), Val 5, TreeNode(3, TreeNode(1), TreeNode(4), Val 5, TreeNode(3, TreeNode(1), TreeNode(4), Val 5, TreeNode(3, TreeNode(1), TreeNode(4), Val 5, TreeNode(3, TreeNode(1), TreeNode(4)",
+        "targetStdout": "10, 8, 4, 7, 11",
+        "solution": [
+            {
+                "code": "def find_second_largest_bst_1(root):\n    if root == None:\n        return None\n    return search_1(root, False)\n\ndef search_1(node, visited_left):\n    # the right child is bigger than the current node\n    if node.right is not None:\n        result = search_1(node.right, visited_left)\n        if result is None:\n            # return this node, because the bottom is reached and the leaf is bigger than this node\n            return node\n        # result node is found\n        return result\n\n    # if this node is a part of the left subtree and this node doesn't have right child\n    # then this is the solution\n    if visited_left:\n        return node\n\n    # go to the left subtree\n    # the current node is bigger than all nodes in the left subtree, search for the biggest one there\n    if node.left is not None:\n        return search_1(node.left, True)\n\n    # this is a tree leaf (the right most element)\n    return None",
+                "explanation": "The first solution is to recursively search the right branches of the tree. If a right child exists, the search continues to the right child, else the function returns the current node. If it is part of the left subtree and has no right child, it returns the node. If the current node is bigger than all nodes in the left subtree, it continues the search to the left subtree. Else, it returns None.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+            },
+            {
+                "code": "def find_second_largest_bst_2(root):\n    return search_2(root, 2)[1]\n\ndef search_2(node, k):\n    if node == None:\n        return (k, None)\n\n    # check right\n    right = search_2(node.right, k)\n    if right[0] == 0:\n        return right\n\n    # check current node\n    k = right[0] - 1\n    if k == 0:\n        return (0, node)\n\n    # check left\n    return search_2(node.left, k)",
+                "explanation": "The second solution recursively searches for the kth smallest node in the tree, where k is 2 (the second largest node). It checks the right subtree for the kth smallest node, and if found, it returns the result. If not, it proceeds with the current node and checks the left subtree for the kth smallest node.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+            }
+        ]
+    },
+    {
+        "id": 86,
+        "title": "Populating Next Right Pointers in Each Node",
+        "category": "Trees",
+        "description": "You are given a perfect binary tree where all leaves are on the same level, and every parent has two children. The binary tree has the following definition: ```\nstruct Node {\n  int val;\n  Node *left;\n  Node *right;\n  Node *next;\n}\n``` Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL. Initially, all next pointers are set to NULL.",
+        "sampleInput": "Sample input is not provided",
+        "sampleOutput": "Sample output is not provided",
+        "difficulty": "Hard",
+        "stdin": "Sample input is not provided",
+        "targetStdout": "Sample output is not provided",
+        "solution": [
+            {
+                "code": "from collections import deque\n\nclass Node:\n    def __init__(self, val, left, right, next):\n        self.val = val\n        self.left = left\n        self.right = right\n        self.next = next\n\ndef populating_next_pointers_tree(root):\n    previous = None\n    queue = deque()\n    queue.append((root, 0))\n\n    while queue:\n        el = queue.popleft()\n        node = el[0]\n        lvl = el[1]\n\n        if node is None:\n            continue\n\n        if (previous is not None) and (lvl == previous[1]):\n            previous[0].next = node\n\n        previous = (node, lvl)\n\n        lvl += 1\n        queue.append((node.left, lvl))\n        queue.append((node.right, lvl))\n\n    return root",
+                "explanation": "Breadth first (level order) traversal, using queue. Save the previous node and level and if the current level is the same then make the previous node point to the current node.\n\n**Time Complexity:** `O(N)`\n**Space Complexity:** `O(N)`"
+            }
+        ]
+    },
+    {
+        "id": 87,
+        "title": "Same Tree",
+        "category": "Trees",
+        "description": "Given two binary trees, write a function to check if they are the same or not.\nTwo binary trees are considered the same if they are structurally identical and the nodes have the same value.",
+        "sampleInput": "1 2 3, 1 2 3",
+        "sampleOutput": "True",
+        "difficulty": "Easy",
+        "stdin": "TreeNode(1, TreeNode(2), TreeNode(3)) TreeNode(1, TreeNode(2), TreeNode(3))",
+        "targetStdout": "True",
+        "solution": [
+            {
+                "code": "def is_same_tree(p, q):\n    if (p is None) and (p == q):\n        return True\n\n    if (p is None) or (q is None):\n        return False\n\n    if p.val != q.val:\n        return False\n\n    # check left\n    if not is_same_tree(p.left, q.left):\n        return False\n\n    # check right\n    if not is_same_tree(p.right, q.right):\n        return False\n\n    return True",
+                "explanation": "Traverse both trees in same time and if something isn't equal, return False.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`    , because of the recursion stack (but this is if the tree is one branch), `O(LogN)` if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 88,
+        "title": "Valid binary search tree",
+        "category": "Trees",
+        "description": "Check if a given tree is a valid binary search tree.\n\nInput:  5\n       / \\\n      1   7\n         / \\\n        6   8\nOutput: True",
+        "sampleInput": "5\n       / \\\n      1   7\n         / \\\n        6   8",
+        "sampleOutput": "True",
+        "difficulty": "Medium",
+        "stdin": "5\n1\n7\n6\n8",
+        "targetStdout": "True",
+        "solution": [
+            {
+                "code": "def is_valid_bst(root):\n    return is_valid_sub_bst(root, -math.inf, math.inf)\n\ndef is_valid_sub_bst(node, lower, upper):\n    if node is None:\n        return True\n\n    if (node.val <= lower) or (node.val >= upper):\n        return False\n\n    # check left\n    if not is_valid_sub_bst(node.left, lower, node.val):\n        return False\n\n    # check right\n    if not is_valid_sub_bst(node.right, node.val, upper):\n        return False\n\n    return True",
+                "explanation": "Visit all nodes and check if the values are inside the boundaries.\nWhen visiting the left child use the value of the parent node like an upper boundary.\nWhen visiting the right child use the value of the parent node like a lower boundary.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`        , because of the recursion stack (but this is the tree is one branch), `O(LogN)` if the tree is balanced."
+            }
+        ]
+    },
+    {
+        "id": 89,
+        "title": "Binary Tree Zigzag Level Order Traversal",
+        "category": "Trees",
+        "description": "Given a binary tree, return the zigzag level order traversal of its nodes' values.\n(ie, from left to right, then right to left for the next level and alternate between).",
+        "sampleInput": "3, 9, 20, null, null, 15, 7",
+        "sampleOutput": "[[3], [20, 9], [15, 7]]",
+        "difficulty": "Medium",
+        "stdin": "TreeNode(3, TreeNode(9), TreeNode(20, TreeNode(15), TreeNode(7)))",
+        "targetStdout": "[[3], [20, 9], [15, 7]]",
+        "solution": [
+            {
+                "code": "def zigzag_level_order_traversal(root):\n    results = []\n    queue = deque()\n    # save nodes and levels in queue\n    queue.append((root, 0))\n\n    while queue:\n        node, lvl = queue.popleft()\n\n        if node is None:\n            continue\n\n        if len(results) < lvl + 1:\n            results.append([])\n        results[lvl].append(node.val)\n\n        lvl += 1\n        queue.append((node.left, lvl))\n        queue.append((node.right, lvl))\n\n    # reverse odd level\n    for i in range(1, len(results), 2):\n        results[i] = results[i][::-1]\n\n    return results",
+                "explanation": "Breadth first (level order) traversal, using queue.\nIn the end reverse each odd level.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`"
+            }
+        ]
+    }
+]

@@ -1,0 +1,268 @@
+[
+    {
+        "name": "SQL",
+        "id": 82,
+        "label": "sql",
+        "extension": "sql",
+        "code": "/*\n1. Products             - (ProductId, ProductName, CalcCosts, Stock, MinStock, Price)\n2. Suppliers            - (SupplierId, SupplierName)\n3. Customers            - (CustomerId, CustomerName, CustomerCity)\n4. Orders               - (OrderId, SupplierId, OrderDate, Delivered)\n5. OrderItems           - (OrderId, ProductId, Quantity)\n6. CustomerOrders       - (OrderId, CustomerId, OrderDate)\n7. CustomerOrderItems   - (OrderId, ProductId, Quantity)\n8. Departments          - (DepartmentId, DepartmentName, ManagerPersonnelId)\n9. Employees            - (PersonnelId, Name, Salary, DepartmentId)\n10. SupplierProducts    - (SupplierId, ProductId)\n11. ProductReviews      - (CustomerId, ProductId, Review, Rating, ReviewDate)\n*/\n\nSelect * from Products"
+    },
+    {
+        "name": "Python (local)",
+        "id": null,
+        "label": "python",
+        "extension": "py",
+        "code": "print(input_str)"
+    },
+    {
+        "name": "Pseudocode",
+        "id": null,
+        "label": "text",
+        "extension": "txt",
+        "code": ""
+    },
+    {
+        "name": "Python",
+        "id": 100,
+        "label": "python",
+        "extension": "py",
+        "code": "input_str = input()\nprint(input_str)"
+    },
+    {
+        "name": "C++",
+        "id": 54,
+        "label": "cpp",
+        "extension": "cpp",
+        "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n  string input;\n  getline(cin, input);\n  cout << input << endl;\n  return 0;\n}"
+    },
+    {
+        "name": "Java",
+        "id": 91,
+        "label": "java",
+        "extension": "java",
+        "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        String input = scanner.nextLine();\n        System.out.println(input);\n    }\n}"
+    },
+    {
+        "name": "C#",
+        "id": 51,
+        "label": "csharp",
+        "extension": "cs",
+        "code": "using System;\n\nclass Program {\n    static void Main(string[] args) {\n        string input = Console.ReadLine();\n        Console.WriteLine(input);\n    }\n}"
+    },
+    {
+        "name": "JavaScript",
+        "id": 102,
+        "label": "javascript",
+        "extension": "js",
+        "code": "console.log(\"Hello World\");"
+    },
+    {
+        "name": "TypeScript",
+        "id": 94,
+        "label": "typescript",
+        "extension": "ts",
+        "code": "console.log(\"Hello World\");"
+    },
+    {
+        "name": "PHP",
+        "id": 68,
+        "label": "php",
+        "extension": "php",
+        "code": "echo \"Hello world\";"
+    },
+    {
+        "name": "C",
+        "id": 50,
+        "label": "c",
+        "extension": "c",
+        "code": "#include <stdio.h>\n\nint main() {\n  char input[100];\n  fgets(input, 100, stdin);\n  printf(\"%s\", input);\n  return 0;\n}"
+    },
+    {
+        "name": "Haskell",
+        "id": 61,
+        "label": "haskell",
+        "extension": "hs",
+        "code": "main = do\n    input <- getLine\n    putStrLn input"
+    },
+    {
+        "name": "Prolog",
+        "id": 69,
+        "label": "prolog",
+        "extension": "pl",
+        "code": "?- read_line_to_string(user_input, Input), write(Input)."
+    },
+    {
+        "name": "Ruby",
+        "id": 72,
+        "label": "ruby",
+        "extension": "rb",
+        "code": "input = gets.chomp\nputs input"
+    },
+    {
+        "name": "Go",
+        "id": 95,
+        "label": "go",
+        "extension": "go",
+        "code": "func main() {\n    fmt.Println(\"Hello World\")\n}"
+    },
+    {
+        "name": "Swift",
+        "id": 83,
+        "label": "swift",
+        "extension": "swift",
+        "code": "import Foundation\n\nif let input = readLine() {\n    print(input)\n}"
+    },
+    {
+        "name": "Kotlin",
+        "id": 78,
+        "label": "kotlin",
+        "extension": "kt",
+        "code": "fun main() {\n    val input = readLine() ?: \"\"\n    println(input)\n}"
+    },
+    {
+        "name": "Rust",
+        "id": 73,
+        "label": "rust",
+        "extension": "rs",
+        "code": "fn main() {\n    println!(\"Hello World\");\n}"
+    },
+    {
+        "name": "Scala",
+        "id": 81,
+        "label": "scala",
+        "extension": "scala",
+        "code": "object Main {\n  def main(args: Array[String]): Unit = {\n    val input = scala.io.StdIn.readLine()\n    println(input)\n  }\n}"
+    },
+    {
+        "name": "Perl",
+        "id": 85,
+        "label": "perl",
+        "extension": "pl",
+        "code": "#!/usr/bin/perl\nuse strict;\nuse warnings;\n\nmy $input = <STDIN>;\nprint $input;"
+    },
+    {
+        "name": "Objective-C",
+        "id": 79,
+        "label": "objectivec",
+        "extension": "m",
+        "code": "#import <Foundation/Foundation.h>\n\nint main(int argc, const char * argv[]) {\n    @autoreleasepool {\n        printf(\"Hello World\\n\");\n    }\n    return 0;\n}"
+    },
+    {
+        "name": "R",
+        "id": 99,
+        "label": "r",
+        "extension": "r",
+        "code": "input <- readline()\ncat(input)"
+    },
+    {
+        "name": "Dart",
+        "id": 90,
+        "label": "dart",
+        "extension": "dart",
+        "code": "import 'dart:io';\n\nvoid main() {\n  var input = stdin.readLineSync();\n  print(input);\n}"
+    },
+    {
+        "name": "CoffeeScript",
+        "id": null,
+        "label": "coffeescript",
+        "extension": "coffee",
+        "code": "input = process.stdin.read()\nprocess.stdout.write input"
+    },
+    {
+        "name": "Groovy",
+        "id": 88,
+        "label": "groovy",
+        "extension": "groovy",
+        "code": "def input = System.console().readLine()\nprintln input"
+    },
+    {
+        "name": "Elixir",
+        "id": 57,
+        "label": "elixir",
+        "extension": "ex",
+        "code": "input = IO.gets(\"\")\nIO.puts input"
+    },
+    {
+        "name": "Lua",
+        "id": 64,
+        "label": "lua",
+        "extension": "lua",
+        "code": "io.write(io.read())"
+    },
+    {
+        "name": "Julia",
+        "id": null,
+        "label": "julia",
+        "extension": "jl",
+        "code": "input = readline()\nprint(input)"
+    },
+    {
+        "name": "Clojure",
+        "id": 86,
+        "label": "clojure",
+        "extension": "clj",
+        "code": "(defn -main []\n  (let [input (read-line)]\n    (println input)))"
+    },
+    {
+        "name": "F#",
+        "id": 87,
+        "label": "fsharp",
+        "extension": "fs",
+        "code": "open System\n\n[<EntryPoint>]\nlet main argv =\n    let input = Console.ReadLine()\n    printfn \"%s\" input\n    0\n"
+    },
+    {
+        "name": "Erlang",
+        "id": 58,
+        "label": "erlang",
+        "extension": "erl",
+        "code": "-module(main).\n-export([start/0]).\n\nstart() ->\n    io:format(\"Hello World~n\")."
+    },
+    {
+        "name": "Visual Basic.Net",
+        "id": 84,
+        "label": "vbnet",
+        "extension": "vb",
+        "code": "Module Main\n    Sub Main()\n        Dim input As String = Console.ReadLine()\n        Console.WriteLine(input)\n    End Sub\nEnd Module"
+    },
+    {
+        "name": "COBOL",
+        "id": 77,
+        "label": "cobol",
+        "extension": "cobol",
+        "code": "IDENTIFICATION DIVISION.\nPROGRAM-ID. MAIN.\nPROCEDURE DIVISION.\n    DISPLAY 'Hello World'.\n    STOP RUN."
+    },
+    {
+        "name": "Assembly",
+        "id": 45,
+        "label": "asm",
+        "extension": "asm",
+        "code": "section .data\n    msg db 'Hello World', 0\n\nsection .text\n    global _start\n\n_start:\n    mov eax, 4\n    mov ebx, 1\n    mov ecx, msg\n    mov edx, 11\n    int 0x80\n\n    mov eax, 1\n    xor ebx, ebx\n    int 0x80"
+    },
+    {
+        "name": "Pascal",
+        "id": 67,
+        "label": "pascal",
+        "extension": "pas",
+        "code": "program StdInOut;\nvar\n  input: string;\nbegin\n  readln(input);\n  writeln(input);\nend."
+    },
+    {
+        "name": "Fortran",
+        "id": 59,
+        "label": "fortran",
+        "extension": "f90",
+        "code": "program StdInOut\n  character(100) :: input\n  read *, input\n  write(*,*) input\nend program StdInOut"
+    },
+    {
+        "name": "Lisp",
+        "id": 55,
+        "label": "lisp",
+        "extension": "lisp",
+        "code": "(defun echo-input ()\n  (format t \"~a~%\" (read-line)))\n\n(echo-input)"
+    },
+    {
+        "name": "Bash",
+        "id": 46,
+        "label": "bash",
+        "extension": "sh",
+        "code": "#!/bin/bash\nread input\necho $input"
+    }
+]

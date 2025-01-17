@@ -1,0 +1,184 @@
+[
+    {
+        "id": 40,
+        "title": "Add Two Numbers",
+        "category": "Linked Lists",
+        "description": "You are given two non-empty linked lists representing two non-negative integers.\nThe digits are stored in reverse order and each of their nodes contain a single digit.\nAdd the two numbers and return it as a linked list.\nYou may assume the two numbers do not contain any leading zero, except the number 0 itself.",
+        "sampleInput": "2 -> 4 -> 3, 5 -> 6 -> 4",
+        "sampleOutput": "7 -> 0 -> 8",
+        "difficulty": "Medium",
+        "stdin": "build_ll([2, 4, 3]) build_ll([5, 6, 4])",
+        "targetStdout": "7 -> 0 -> 8",
+        "solution": [
+            {
+                "code": "def add_two_numbers(l1, l2):\n    start = ListNode(None)\n    # use the same linked list as result so the Space complexity will be O(1)\n    start.next = l1\n    pointer = start\n    transfer = 0\n\n    while (l1 is not None) or (l2 is not None) or (transfer != 0):\n        v1 = 0\n        if l1 is not None:\n            v1 = l1.val\n            l1 = l1.next\n\n        v2 = 0\n        if l2 is not None:\n            v2 = l2.val\n            l2 = l2.next\n\n        total = transfer + v1 + v2\n        transfer = total // 10\n\n        if l1 is None:\n            # if the first list is shorter than the second, add new elements at the end\n            pointer.next = ListNode(None)\n        pointer = pointer.next\n        pointer.val = total % 10\n\n    return start.next",
+                "explanation": "Iterate LL and add values on same position (just like adding real numbers).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+            }
+        ]
+    },
+    {
+        "id": 41,
+        "title": "Intersecting Linked Lists",
+        "category": "Linked Lists",
+        "description": "Given two singly linked lists that intersect at some point, find the intersecting node. The lists are non-cyclical. In this example, assume nodes with the same value are the exact same node objects.",
+        "sampleInput": "3 -> 7 -> 8 -> 10, 99 -> 1 -> 8 -> 10",
+        "sampleOutput": "8",
+        "difficulty": "Medium",
+        "stdin": "[3, 7, 8, 10] [1, 8, 10]",
+        "targetStdout": "8",
+        "solution": [
+            {
+                "code": "def find_intersecting_node(ll1, ll2):\n    count1 = 0\n    temp1 = ll1\n    while (temp1 is not None):\n        count1 += 1\n        temp1 = temp1.next\n\n    count2 = 0\n    temp2 = ll2\n    while (temp2 is not None):\n        count2 += 1\n        temp2 = temp2.next\n\n    m = min(count1, count2)\n\n    for i in range(count1 - m):\n        ll1 = ll1.next\n\n    for i in range(count2 - m):\n        ll2 = ll2.next\n\n    intersect = None\n    while ll1 is not None:\n        if (ll1.val != ll2.val):\n            intersect = None\n        else:\n            if (intersect == None):\n                intersect = ll1\n\n        ll1 = ll1.next\n        ll2 = ll2.next\n\n    return intersect",
+                "explanation": "Find the longer linked list and move the pointer (now both lists will have the same number of elements). After that, move both pointers from both lists and compare elements.\n\n**Time Complexity:** `O(N + M)`\n\n**Space Complexity:** `O(1)`"
+            }
+        ]
+    },
+    {
+        "id": 42,
+        "title": "Ascending Linked List",
+        "category": "Linked Lists",
+        "description": "Determine whether the sequence of items is ascending so that its each element is strictly larger than (and not merely equal to) the element that precedes it. Return True if that is the case, and return False otherwise.",
+        "sampleInput": "ll = [-5, 10, 99, 123456]",
+        "sampleOutput": "True",
+        "difficulty": "Easy",
+        "stdin": "[-5, 10, 99, 123456]",
+        "targetStdout": "True",
+        "solution": [
+            {
+                "code": "def is_ascending_ll(ll):\n    while ll.next != None:\n        if ll.val >= ll.next.val:\n            return False\n        ll = ll.next\n\n    return True",
+                "explanation": "Iterate node by node and compare the current value with the next value.\nIf the next node is smaller or equal return false.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+            }
+        ]
+    },
+    {
+        "id": 43,
+        "title": "Maximum Difference Sub-Linked List",
+        "category": "Linked Lists",
+        "description": "Given a linked list of integers, find and return the sub-linked list of `k` consecutive elements where the difference between the smallest element and the largest element is the largest possible. If there are several sub-linked lists of `k` elements so that all these sub-linked list have the same largest possible difference, return the sub-linked list that occurs first.",
+        "sampleInput": "42 -> 17 -> 99 -> 12 -> 65 -> 77 -> 11 -> 26, 5",
+        "sampleOutput": "99 -> 12 -> 65 -> 77 -> 11",
+        "difficulty": "Hard",
+        "stdin": "[42, 17, 99, 12, 65, 77, 11, 26]",
+        "targetStdout": "99 -> 12 -> 65 -> 77 -> 11",
+        "solution": [
+            {
+                "code": "def max_diference_subll(ll, k):\n    if ll is None:\n            return None\n\n    start, end = ll, ll\n\n    # move the end pointer for k-1 places\n    for i in range(1, k):\n        end = end.next\n        if end is None:\n            return None\n\n    result_start, result_end = start, end\n\n    while end is not None:\n        # compare the result with the current sub-linked list\n        if abs(result_start.val - result_end.val) < abs(start.val - end.val):\n            result_start, result_end = start, end\n\n        # move the both pointers\n        start = start.next\n        end = end.next\n\n    # cut the original linked list\n    result_end.next = None\n    return result_start",
+                "explanation": "Using 2 pointers (start and end), traverse the linked list and compare the results. But first, move the end pointer for k places.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+            }
+        ]
+    },
+    {
+        "id": 44,
+        "title": "Merge K Sorted Linked Lists",
+        "category": "Linked Lists",
+        "description": "Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.",
+        "sampleInput": "lists = [[1, 4, 5], [1, 3, 4], [2, 6]]",
+        "sampleOutput": "[1, 1, 2, 3, 4, 4, 5, 6]",
+        "difficulty": "Hard",
+        "stdin": "[[1, 4, 5], [1, 3, 4], [2, 6]]",
+        "targetStdout": "[1, 1, 2, 3, 4, 4, 5, 6]",
+        "solution": [
+            {
+                "code": "from ll_helpers import ListNode\n\nimport heapq\n\nclass PQNode:\n    def __init__(self, node):\n        self.val = node.val\n        self.node = node\n\n    def __lt__(self, other):\n        return self.val < other.val\n\nclass PriorityQueue:\n    def __init__(self):\n        self.data = []\n\n    def push(self, node):\n        heapq.heappush(self.data, PQNode(node))\n\n    def pop(self):\n        return heapq.heappop(self.data).node\n\n    def is_empty(self):\n        return len(self.data) == 0\n\ndef merge_k_lists_1(lists):\n    heap = PriorityQueue()\n\n    for node in lists:\n        if node is not None:\n            heap.push(node)\n\n    result = ListNode(-1)\n    pointer = result\n\n    while not heap.is_empty():\n        node = heap.pop()\n\n        pointer.next = node\n        pointer = pointer.next\n\n        node = node.next\n        if node is not None:\n            heap.push(node)\n\n    return result.next",
+                "explanation": "Using Priority Queue (heap) in each step chose the smallest element from the lists and add it to the result list.\n\n**Time Complexity:** \u0009O(N * LogK)  , LogK is for adding and deleting from Priority queue\n**Space Complexity:** \u0009O(N)"
+            },
+            {
+                "code": "def merge_k_lists_2(lists):\n    n = len(lists)\n    if n == 0:\n        return None\n\n    step = 1\n\n    while step < n:\n        i = 0\n\n        while i + step < n:\n            lists[i] = merge_2_lists(lists[i], lists[i + step])\n            i += 2 * step\n\n        step *= 2\n\n    return lists[0]\n\ndef merge_2_lists(l1, l2):\n    result = ListNode(-1)\n    pointer = result\n\n    while (l1 is not None) and (l2 is not None):\n        if l1.val < l2.val:\n            pointer.next = l1\n            l1 = l1.next\n        else:\n            pointer.next = l2\n            l2 = l2.next\n\n        pointer = pointer.next\n\n    if l1 is not None:\n        pointer.next = l1\n\n    if l2 is not None:\n        pointer.next = l2\n\n    return result.next",
+                "explanation": "Using Divide and Conquer, similar to Merge sort.\n\n**Time Complexity:** \u0009O(N * LogK)\n**Space Complexity:** \u0009O(1)  , (using the same old list)"
+            }
+        ]
+    },
+    {
+        "id": 45,
+        "title": "Odd Even Linked List",
+        "category": "Linked Lists",
+        "description": "Given a singly linked list, group all odd nodes together followed by the even nodes.\nPlease note here we are talking about the node number and not the value in the nodes.\nThe first node is considered odd, the second node even and so on ...",
+        "sampleInput": "1 -> 2 -> 3 -> 4 -> 5",
+        "sampleOutput": "1 -> 3 -> 5 -> 2 -> 4",
+        "difficulty": "Easy",
+        "stdin": "1 -> 2 -> 3 -> 4 -> 5",
+        "targetStdout": "1 -> 3 -> 5 -> 2 -> 4",
+        "solution": [
+            {
+                "code": "def odd_even_ll(head):\n    odd = ListNode(None)\n    oddPointer = odd\n\n    even = ListNode(None)\n    evenPointer = even\n\n    i = 1\n    while head is not None:\n        if i % 2 == 1:\n            oddPointer.next = head\n            oddPointer = oddPointer.next\n        else:\n            evenPointer.next = head\n            evenPointer = evenPointer.next\n\n        head = head.next\n        i += 1\n\n    evenPointer.next = None\n    oddPointer.next = even.next\n\n    return odd.next",
+                "explanation": "Count the index of the node and add it to the odd or even linked list (without creating new nodes).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1`)"
+            }
+        ]
+    },
+    {
+        "id": 46,
+        "title": "Remove Duplicates from Sorted Linked List",
+        "category": "Linked Lists",
+        "description": "Given a sorted linked list `nums`, remove the duplicates in-place such that each element appear only once and return the modified linked list.\nDo not allocate extra space for another linked list, you must do this by modifying the input linked list in-place with O(1) extra memory.",
+        "sampleInput": "nums = 1 -> 1 -> 2",
+        "sampleOutput": "1 -> 2",
+        "difficulty": "Easy",
+        "stdin": "[1, 1, 2]",
+        "targetStdout": "1 -> 2",
+        "solution": [
+            {
+                "code": "def remove_duplicates(nums):\n    if nums is None:\n        return nums\n    pointer = nums\n\n    while pointer.next is not None:\n        if pointer.val == pointer.next.val:\n            # skip the next value because it's a duplicate\n            pointer.next = pointer.next.next\n        else:\n            # search next\n            pointer = pointer.next\n\n    return nums",
+                "explanation": "Iterate the linked list and jump the neighbouring duplicates (change the next pointer).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1`)"
+            }
+        ]
+    },
+    {
+        "id": 47,
+        "title": "Remove Element",
+        "category": "Linked Lists",
+        "description": "Given a linked list `nums` and a value `val`, remove all instances of that value in-place and return the new linked list.\nDo not allocate extra space for another linked list, you must do this by modifying the input linked list in-place with `O(1)` extra memory.",
+        "sampleInput": "3 -> 2 -> 2 -> 3",
+        "sampleOutput": "2 -> 2",
+        "difficulty": "Easy",
+        "stdin": "[3, 2, 2, 3]",
+        "targetStdout": "2 -> 2",
+        "solution": [
+            {
+                "code": "def remove_element(nums, val):\n    res = ListNode(0)\n    res.next = nums\n    pointer = res\n\n    while pointer.next is not None:\n        if pointer.next.val == val:\n            # skip the next value because it's value that needs to be deleted\n            pointer.next = pointer.next.next\n        else:\n            # search next\n            pointer = pointer.next\n\n    return res.next\n",
+                "explanation": "Iterate the linked list and jump the values that needs to be deleted (change the next pointer).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1`)"
+            }
+        ]
+    },
+    {
+        "id": 48,
+        "title": "Remove Nth Node From End of List",
+        "category": "Linked Lists",
+        "description": "Given a linked list, remove the n-th node from the end of the list and return its head.",
+        "sampleInput": "1 -> 2 -> 3 -> 4 -> 5, 2",
+        "sampleOutput": "1 -> 2 -> 3 -> 5",
+        "difficulty": "Easy",
+        "stdin": "1 -> 2 -> 3 -> 4 -> 5 2",
+        "targetStdout": "1 -> 2 -> 3 -> 5",
+        "solution": [
+            {
+                "code": "# import ListNode class from ll_helpers.py\nfrom ll_helpers import ListNode\n\ndef remove_nth_from_end_1(head, n):\n    helper = ListNode(0)\n    helper.next = head\n\n    first = helper\n    second = helper\n\n    # count to N with the first pointer\n    for i in range(n + 1):\n        first = first.next\n\n    # go (Length - N) elements with first pointer\n    # and in that way the second pointer will be Nth from the end\n    while first != None:\n        first = first.next\n        second = second.next\n\n    # remove the element (change the next pointer from the previous element)\n    second.next = second.next.next\n\n    return helper.next",
+                "explanation": "Playing with the pointers.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+            },
+            {
+                "code": "def remove_nth_from_end_2(head, n):\n    result = remove_recursively(head, n)\n    if result[0] == n:\n        return head.next\n    return head\n\ndef remove_recursively(pointer, n):\n    if pointer is None:\n        return (0, None)\n\n    # go to the end and count how many are there\n    result = remove_recursively(pointer.next, n)\n\n    if result[0] == n:\n        pointer.next = result[1]\n\n    return (result[0] + 1, pointer.next)",
+                "explanation": "Recursive solution.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`  , because of the recursive calls stack"
+            }
+        ]
+    },
+    {
+        "id": 49,
+        "title": "Reverse a linked list",
+        "category": "Linked Lists",
+        "description": "Reverse a linked list in one iteration without using additional space. Iterate LL and change the pointer of the current nodes to point to the previous nodes.",
+        "sampleInput": "1 -> 2 -> 3 -> 4",
+        "sampleOutput": "4 -> 3 -> 2 -> 1",
+        "difficulty": "Medium",
+        "stdin": "[1, 2, 3, 4]",
+        "targetStdout": "4 -> 3 -> 2 -> 1",
+        "solution": [
+            {
+                "code": "def reverse_ll(ll):\n    prev_node = None\n\n    while ll is not None:\n        # save the current node\n        current = ll\n        # go to the next node\n        ll = ll.next\n\n        # change the pointer of the current node to point to the previous node\n        current.next = prev_node\n        # save the current node for the next iteration\n        prev_node = current\n\n    return prev_node",
+                "explanation": "Iterate LL and change the pointer of the current nodes to point to the previous nodes.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+            },
+            {
+                "code": "def reverse_ll_2(ll):\n    return reverse(ll, None)\n\ndef reverse(node, prev_node):\n    if node is None:\n        # the end of the ll is reached, return the previous node\n        # that'll be the first node in the reversed ll\n        return prev_node\n\n    # send node.next as current node and node as previous node in the next step\n    result = reverse(node.next, node)\n    # change the pointer of the current node to point to the previous node\n    node.next = prev_node\n\n    return result",
+                "explanation": "Same approach using recursion.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N)`, because of the recursion stack (the stack will be with N depth till the last node of the linked list is reached)"
+            }
+        ]
+    }
+]

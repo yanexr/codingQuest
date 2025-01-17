@@ -1,0 +1,183 @@
+[
+  {
+    "id": 60,
+    "title": "Customer Orders Outside the Date Range",
+    "category": "SQL",
+    "description": "Retrieve all customer orders that were **not** placed between April 30, 2023, and August 31, 2023.\n\n**Expected Output**:\n\n| OrderId | CustomerId | OrderDate   |\n|---------|------------|-------------|\n| 1       | 1          | 2023-03-29  |\n| 3       | 3          | 2023-10-01  |\n| 4       | 4          | 2023-11-18  |",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Easy",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "SELECT *\nFROM CustomerOrders\nWHERE OrderDate NOT BETWEEN '2023-04-30' AND '2023-08-31';",
+        "explanation": "We use NOT BETWEEN to exclude records whose OrderDate lies within the given range. This returns all customer orders placed before April 30, 2023 or after August 31, 2023."
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "title": "Products Below Minimum Stock",
+    "category": "SQL",
+    "description": "Find all products from the **Products** table where the **Stock** is less than the **MinStock**. Then sort them ascending by the difference between **MinStock** and **Stock**, and output that difference.\n\n**Expected Output**:\n\n| ProductId | ProductName                 | difference |\n|-----------|-----------------------------|------------|\n| 5         | SoundBlitz HD Headphones             | 11          |",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Medium",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "SELECT ProductId,\n       ProductName,\n       (MinStock - Stock) AS difference\nFROM Products\nWHERE Stock < MinStock\nORDER BY difference ASC;",
+        "explanation": "We check whether the product's Stock is below its MinStock. If so, the product is included in the result. We then calculate the difference (MinStock - Stock) and sort by that difference in ascending order."
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "title": "Average Days to Review",
+    "category": "SQL",
+    "description": "Calculate the average number of days it takes for a customer to leave a review after placing an order. If a customer never left a review, that order is not included in the average.\n\n**Expected Output**:\n\n| average_days |\n|-------------|\n| 5.0        |\n\n",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Medium",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "SELECT\n    AVG(JULIANDAY(PR.ReviewDate) - JULIANDAY(CO.OrderDate)) AS average_days\nFROM CustomerOrders CO\nJOIN CustomerOrderItems COI ON CO.OrderId = COI.OrderId\nJOIN ProductReviews PR\n    ON PR.CustomerId = CO.CustomerId\n    AND PR.ProductId = COI.ProductId;\n",
+        "explanation": "We join CustomerOrders with CustomerOrderItems to access each product in the order, and then join ProductReviews to match the same product reviewed by the same customer. The JULIANDAY() function converts a date into a numeric value, so subtracting the order date from the review date gives the number of days between the two. Finally, the AVG() function calculates the average across all matched records."
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "title": "Count Tech Suppliers",
+    "category": "SQL",
+    "description": "Return the number of suppliers whose **SupplierName** contains the word 'Tech'.\n\n**Expected Output**:\n\n| number_of_suppliers_with_tech |\n|-------------------------------|\n| 2                             |",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Easy",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "SELECT COUNT(*) AS number_of_suppliers_with_tech\nFROM Suppliers\nWHERE SupplierName LIKE '%Tech%';",
+        "explanation": "We use the LIKE operator with '%Tech%' to find any supplier names that include the substring 'Tech'. COUNT(*) returns how many such suppliers exist."
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "title": "Sum Salaries by Department",
+    "category": "SQL",
+    "description": "Show the total salaries of all employees, grouped by the department name. Sort the results in descending order of the total salaries.\n\n**Expected Output**:\n\n| DepartmentName | total_salaries |\n|----------------|-----------------|\n| Sales          | 145000.00      |\n| Finance        | 90000.00       |\n| Marketing      | 85000.00       |\n| IT             | 80000.00       |",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Medium",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "SELECT d.DepartmentName,\n       SUM(e.Salary) AS total_salaries\nFROM Employees AS e\nJOIN Departments AS d ON e.DepartmentId = d.DepartmentId\nGROUP BY d.DepartmentName\nORDER BY total_salaries DESC;",
+        "explanation": "We join the Employees table with Departments based on DepartmentId. Then, for each department, we use SUM to calculate the total salary of its employees. Finally, we sort the results by total_salaries in descending order."
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "title": "Customers with Multi-Item Orders",
+    "category": "SQL",
+    "description": "Find all customers who have placed **at least one order** containing more than one distinct product.\n\n**Expected Output**:\n\n| CustomerId | CustomerName | OrderId | different_items |\n|------------|--------------|---------|-----------------|\n| 2          | Jane Smith   | 2       | 2               |\n\n",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Medium",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "SELECT c.CustomerId,\n       c.CustomerName,\n       co.OrderId,\n       COUNT(DISTINCT coi.ProductId) AS different_items\nFROM CustomerOrders AS co\nJOIN CustomerOrderItems AS coi ON co.OrderId = coi.OrderId\nJOIN Customers AS c ON co.CustomerId = c.CustomerId\nGROUP BY c.CustomerId, c.CustomerName, co.OrderId\nHAVING COUNT(DISTINCT coi.ProductId) > 1;",
+        "explanation": "We join CustomerOrders and CustomerOrderItems to see which products are in each order, then group by the order and customer. The DISTINCT keyword ensures we only count unique products in each order. Finally, the HAVING clause filters results to those orders containing more than one distinct product."
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "title": "CRUD Operations",
+    "category": "SQL",
+    "description": "In this exercise, you will practice all four CRUD (Create, Read, Update, Delete) operations. Follow these steps:\n1. **Create** a new table named `Stores` with the following columns:\n   - `StoreId` (INTEGER PRIMARY KEY)\n   - `StoreName` (TEXT)\n   - `City` (TEXT)\n   - `OpeningDate` (DATE)\n2. **Insert** exactly three rows into the `Stores` table:\n   - Row 1: `(1, 'TechPlace', 'New York', '2025-01-01')`\n   - Row 2: `(2, 'OfficeMagic', 'Chicago', '2025-01-05')`\n   - Row 3: `(3, 'GadgetHub', 'Boston', '2025-01-10')`\n3. **Read** (select) all rows from `Stores` to verify the insert.\n4. **Update** the city of the store with `StoreId = 2` to `'Los Angeles'`.\n5. **Delete** the row where `StoreId = 1`.\n6. **Drop** the `Stores` table entirely.\n\n**Expected Output** (after you have inserted the rows):\n\n| StoreId | StoreName   | City        | OpeningDate |\n|---------|-------------|-------------|-------------|\n| 1       | TechPlace   | New York    | 2025-01-01  |\n| 2       | OfficeMagic | Chicago     | 2025-01-05  |\n| 3       | GadgetHub   | Boston      | 2025-01-10  |\n\n(After the update, `OfficeMagic` should show `'Los Angeles'` instead of `'Chicago'`. After the delete, the row with StoreId `1` will be gone. Finally, dropping the table removes it entirely from the database.)",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Easy",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "-- 1. CREATE the Stores table\nCREATE TABLE Stores (\n    StoreId      INTEGER NOT NULL PRIMARY KEY,\n    StoreName    TEXT NOT NULL,\n    City         TEXT NOT NULL,\n    OpeningDate  DATE\n);\n\n-- 2. INSERT three rows into the Stores table\nINSERT INTO Stores (StoreId, StoreName, City, OpeningDate)\nVALUES\n    (1, 'TechPlace',   'New York',    '2025-01-01'),\n    (2, 'OfficeMagic', 'Chicago',     '2025-01-05'),\n    (3, 'GadgetHub',   'Boston',      '2025-01-10');\n\n-- 3. READ (select) all rows from the Stores table\nSELECT * FROM Stores;\n\n-- 4. UPDATE the city of the store with StoreId = 2\nUPDATE Stores\nSET City = 'Los Angeles'\nWHERE StoreId = 2;\n\n-- Verify the update\nSELECT * FROM Stores;\n\n-- 5. DELETE the row with StoreId = 1\nDELETE FROM Stores\nWHERE StoreId = 1;\n\n-- Verify the deletion\nSELECT * FROM Stores;\n\n-- 6. DROP the entire Stores table\nDROP TABLE Stores;",
+        "explanation": "1. We create the Stores table with four columns. 2. We insert three specific rows into this table. 3. We select all rows to confirm the insertion. 4. We update one of the existing rows by changing the city. 5. We delete a specific row (StoreId = 1). 6. Finally, we drop the Stores table to remove it from the database."
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "title": "Recursive Category Hierarchy",
+    "category": "SQL",
+    "description": "In this exercise, you'll explore **recursive CTEs** (Common Table Expressions) in SQLite. You will:\n1. **Create** a new table called `Categories` that references itself (for a hierarchical structure).\n2. **Insert** several rows into `Categories` to form a category hierarchy.\n3. **Use a recursive CTE** to retrieve all categories along with a hierarchical path from the top-level category down to each subcategory.\n\n**Steps**:\n1. Create the `Categories` table:\n   - `CategoryId` (INTEGER PRIMARY KEY)\n   - `CategoryName` (TEXT)\n   - `ParentCategoryId` (INTEGER) referencing `CategoryId` (can be NULL for top-level categories)\n2. Insert the following rows:\n   - (1, 'Electronics', NULL)\n   - (2, 'Computers', 1)\n   - (3, 'Laptops', 2)\n   - (4, 'Smartphones', 1)\n   - (5, 'Printers', 2)\n3. Write a **recursive CTE** to list all categories, including a concatenated path that shows their hierarchy.\n4. Select from this recursive CTE to display the hierarchy in a single query.\n\n**Expected Output**:\n\n| CategoryId | CategoryName  | ParentCategoryId | path                                     |\n|------------|---------------|------------------|------------------------------------------|\n| 1          | Electronics   | (null)           | Electronics                              |\n| 2          | Computers     | 1                | Electronics > Computers                  |\n| 3          | Laptops       | 2                | Electronics > Computers > Laptops        |\n| 4          | Smartphones   | 1                | Electronics > Smartphones                |\n| 5          | Printers      | 2                | Electronics > Computers > Printers       |\n\n",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Hard",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "-- 1. CREATE the Categories table\nCREATE TABLE Categories (\n    CategoryId       INTEGER PRIMARY KEY,\n    CategoryName     TEXT NOT NULL,\n    ParentCategoryId INTEGER REFERENCES Categories(CategoryId)\n);\n\n-- 2. INSERT rows to form a hierarchy\nINSERT INTO Categories (CategoryId, CategoryName, ParentCategoryId)\nVALUES\n    (1, 'Electronics', NULL),\n    (2, 'Computers', 1),\n    (3, 'Laptops', 2),\n    (4, 'Smartphones', 1),\n    (5, 'Printers', 2);\n\n-- 3. Use a recursive CTE to retrieve the hierarchy\nWITH RECURSIVE CategoryHierarchy AS (\n    -- Start with top-level categories (where ParentCategoryId is NULL)\n    SELECT\n        c.CategoryId,\n        c.CategoryName,\n        c.ParentCategoryId,\n        c.CategoryName AS path\n    FROM Categories c\n    WHERE c.ParentCategoryId IS NULL\n\n    UNION ALL\n\n    -- Recursively join Categories to build the path\n    SELECT\n        c.CategoryId,\n        c.CategoryName,\n        c.ParentCategoryId,\n        (ch.path || ' > ' || c.CategoryName) AS path\n    FROM Categories c\n    JOIN CategoryHierarchy ch ON c.ParentCategoryId = ch.CategoryId\n)\nSELECT CategoryId,\n       CategoryName,\n       ParentCategoryId,\n       path\nFROM CategoryHierarchy;",
+        "explanation": "1. **CREATE** the table with a self-referential foreign key (ParentCategoryId references CategoryId) to allow hierarchical data.\n2. **INSERT** five rows to form a multi-level category structure (Electronics as the parent of Computers and Smartphones, Computers as the parent of Laptops and Printers, etc.).\n3. **WITH RECURSIVE** sets up a CTE (Common Table Expression) that begins with top-level categories and then recursively finds child categories. The concatenated 'path' column shows the hierarchy.\n4. **SELECT** from the CTE to view the full category tree in a single query."
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "title": "Top 3 Reviews per Product",
+    "category": "SQL",
+    "description": "Using a **window function**, retrieve the top 3 highest-rated reviews for each product from the **ProductReviews** table. This will require partitioning by product and ordering by the rating. \n\n**Expected Output**:\n\n| ProductId | Review                                  | Rating | rating_rank |\n|-----------|------------------------------------------|--------|------------|\n| 1         | Great laptop, very fast!                | 5      | 1          |\n| 2         | Good printer for the price.             | 4      | 1          |\n| 3         | Love the features on this smartphone.   | 5      | 1          |\n| 4         | Tablet is lightweight and portable.      | 4      | 1          |\n| 5         | Excellent sound quality!                | 5      | 1          |\n| 5         | Pro: Great sound. Con: Uncomfortable after long use.  | 5      | 2          |",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Hard",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "-- 1) Window Function approach\n\nWITH ranked_reviews AS (\n    SELECT \n        pr.ProductId,\n        pr.Review,\n        pr.Rating,\n        RANK() OVER (\n            PARTITION BY pr.ProductId \n            ORDER BY pr.Rating DESC\n        ) AS rating_rank\n    FROM ProductReviews pr\n)\nSELECT ProductId,\n       Review,\n       Rating,\n       rating_rank\nFROM ranked_reviews\nWHERE rating_rank <= 3\nORDER BY ProductId, rating_rank;",
+        "explanation": "We use a CTE with a window function (RANK) to assign a ranking to each review within its product group, sorting by Rating in descending order. Then we filter to the top 3 (rating_rank <= 3) for each product. Finally, we order by ProductId and rating_rank."
+      },
+      {
+        "code": "-- 2) Correlated subquery approach\n\nSELECT pr.ProductId,\n       pr.Review,\n       pr.Rating,\n       (\n         SELECT COUNT(*) + 1 \n         FROM ProductReviews pr2\n         WHERE pr2.ProductId = pr.ProductId\n           AND pr2.Rating > pr.Rating\n       ) AS rating_rank\nFROM ProductReviews pr\nWHERE (\n         SELECT COUNT(*)\n         FROM ProductReviews pr2\n         WHERE pr2.ProductId = pr.ProductId\n           AND pr2.Rating > pr.Rating\n       ) < 3\nORDER BY pr.ProductId, pr.Rating DESC;",
+        "explanation": "This solution uses a correlated subquery. For each review, we count how many reviews of the same product have a strictly higher Rating. If fewer than 3 reviews have a higher Rating, that means the current review is among the top 3. We also compute a 'rating_rank' (as COUNT(*) + 1) to see the rank within each product."
+      }
+    ]
+  },
+
+  {
+    "id": 69,
+    "title": "Who Spends the Most?",
+    "category": "SQL",
+    "description": "Determine which customers have spent the most money in total across all their orders.\n\n**Expected Output**:\n\n| CustomerId | CustomerName  | total_spent |\n|------------|---------------|-------------|\n| 1          | John Doe      | 1999.98     |\n| 3          | Bob Johnson   | 899.97      |\n| 2          | Jane Smith    | 629.98      |\n| 4          | Emily Brown   | 159.98      |\n| 5          | Alice White   | 79.99       |",
+    "sampleInput": "",
+    "sampleOutput": "",
+    "difficulty": "Medium",
+    "stdin": "",
+    "targetStdout": "",
+    "solution": [
+      {
+        "code": "-- 1) First Approach (Correlated Subquery)\n\nSELECT c.CustomerId,\n       c.CustomerName,\n       (\n         SELECT SUM(p.Price * coi.Quantity)\n         FROM CustomerOrderItems coi\n         JOIN Products p ON p.ProductId = coi.ProductId\n         WHERE coi.OrderId IN (\n           SELECT co.OrderId\n           FROM CustomerOrders co\n           WHERE co.CustomerId = c.CustomerId\n         )\n       ) AS total_spent\nFROM Customers c\nORDER BY total_spent DESC;",
+        "explanation": "This approach uses a correlated subquery for each customer. We find all of their orders, then sum the price of each product multiplied by the quantity. While this works, it can be **less efficient** for large data sets because the subquery runs once per customer."
+      },
+      {
+        "code": "-- 2) More Efficient Approach (JOIN + GROUP BY)\n\nSELECT c.CustomerId,\n       c.CustomerName,\n       SUM(p.Price * coi.Quantity) AS total_spent\nFROM Customers c\nJOIN CustomerOrders co ON c.CustomerId = co.CustomerId\nJOIN CustomerOrderItems coi ON co.OrderId = coi.OrderId\nJOIN Products p ON p.ProductId = coi.ProductId\nGROUP BY c.CustomerId, c.CustomerName\nORDER BY total_spent DESC;",
+        "explanation": "By **joining** Customers with their orders, order items, and the Products table, we can **aggregate** all at once with SUM. This single GROUP BY query is generally **faster** than a correlated subquery, especially for larger databases."
+      }
+    ]
+  }
+  
+
+]

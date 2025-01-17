@@ -1,0 +1,184 @@
+[
+    {
+        "id": 20,
+        "title": "Climbing Staircase",
+        "category": "Dynamic Programming",
+        "description": "There exists a staircase with `N` steps, and you can climb up either `X` different steps at a time.\nGiven `N`, write a function that returns the number of unique ways you can climb the staircase.\nThe order of the steps matters.",
+        "sampleInput": "steps = [1, 2], height = 4",
+        "sampleOutput": "5",
+        "difficulty": "Medium",
+        "stdin": "[1, 2] 4",
+        "targetStdout": "5",
+        "solution": [
+          {
+            "code": "def climbing_staircase(steps, height):\n    dp = [0 for i in range(height)]\n\n    # add all steps into dp\n    for s in steps:\n        if s <= height:\n            dp[s - 1] = 1\n\n    # for each position look how you can arrive there\n    for i in range(height):\n        for s in steps:\n            if i - s >= 0:\n                dp[i] += dp[i - s]\n\n    return dp[height - 1]\n\n# Test 1\n# Correct result => 5\nprint(climbing_staircase([1, 2], 4)",
+            "explanation": "Dynamic Programing solution.\n\n**Time Complexity:** `O(N*S)`\n\n**Space Complexity:** `O(N)`"
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "title": "Coin Change",
+        "category": "Dynamic Programming",
+        "description": "You are given coins of different denominations and a total amount of money `amount`.\nWrite a function to compute the fewest number of coins that you need to make up that amount.\nIf that amount of money cannot be made up by any combination of the coins, return -1.",
+        "sampleInput": "coins = [1, 2, 5], amount = 11",
+        "sampleOutput": "3",
+        "difficulty": "Medium",
+        "stdin": "[1, 2, 5] 11",
+        "targetStdout": "3",
+        "solution": [
+          {
+            "code": "def coin_change_1(coins, amount):\n    if amount == 0:\n        return 0\n    if len(coins) == 0:\n        return -1\n\n    max_value = amount + 1  # use this instead of math.inf\n    dp = [max_value for i in range(max_value)]\n    dp[0] = 0\n\n    for i in range(1, max_value):\n        for c in coins:\n            if c <= i:\n                # search on previous positions for min coins needed\n                dp[i] = min(dp[i], dp[i - c] + 1)\n\n    if (dp[amount] == max_value):\n        return -1\n    return dp[amount]",
+            "explanation": "Dynamic programming solution 1\n    **Time Complexity:** `O(A*C)`, A = amount, C = coins\n    **Space Complexity:** `O(A)`"
+          },
+          {
+            "code": "def coin_change_2(coins, amount):\n    if amount == 0:\n        return 0\n    if len(coins) == 0:\n        return -1\n\n    max_value = amount + 1\n    max_coin = min(max_value, max(coins) + 1)\n    dp = [max_value for i in range(max_coin)]\n    dp[0] = 0\n\n    for i in range(1, max_value):\n        i_mod = i % max_coin\n        dp[i_mod] = max_value # reset current position\n\n        for c in coins:\n            if c <= i:\n                # search on previous positions for min coins needed\n                dp[i_mod] = min(dp[i_mod], dp[(i - c) % max_coin] + 1)\n\n    if (dp[amount % max_coin] == max_value):\n        return -1\n    return dp[amount % max_coin]",
+            "explanation": "Dynamic programming solution 2 (don't need the whole array, just use modulo to iterate through the partial array)\n    Time **Complexity:** `O(A*C)`, A = amount, C = coins\n    **Space Complexity:** `O(maxCoin)`"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "title": "Count IP Addresses",
+        "category": "Dynamic Programming",
+        "description": "An IP Address (IPv4) consists of 4 numbers which are all between 0 and 255.\nIn this problem however, we are dealing with 'Extended IP Addresses' which consist of `K` such numbers.\nGiven a string `S` containing only digits and a number `K`, your task is to count how many valid 'Extended IP Addresses' can be formed.\nAn Extended IP Address is valid if:\n* it consists of exactly `K` numbers\n* each numbers is between 0 and 255, inclusive\n* a number cannot have leading zeroes",
+        "sampleInput": "'1234567', 3",
+        "sampleOutput": "1",
+        "difficulty": "Easy",
+        "stdin": "'1234567', 3",
+        "targetStdout": "1",
+        "solution": [
+          {
+            "code": "def count_ip_addresses(S, K):\n    n = len(S)\n    if n == 0:\n        return 0\n    if n < K:\n        return 0\n\n    dp = [0] * (n + 1)\n    dp[0] = 1\n\n    for i in range(K):\n        # if you want to save just little calculations you can use min(3*(i+1), n) instead of n\n        for j in range(n, i, -1):\n            # reset the value\n            dp[j] = 0\n\n            # use iteration to check all 3 possible numbers (x, xx, xxx), instead of writing 3 IFs\n            for e in range(max(i, j - 3), j):\n                if is_valid(S[e : j]):\n                    dp[j] += dp[e]\n\n    return dp[n]",
+            "explanation": "1D Dynamic programming solution.\n\n**Time Complexity:** `O(N*K)`\n\n**Space Complexity:** `O(N)`\n"
+          }
+        ]
+      },
+      {
+        "id": 23,
+        "title": "Create Palindrome (Minimum Insertions to Form a Palindrome)",
+        "category": "Dynamic Programming",
+        "description": "Given a string, find the palindrome that can be made by inserting the fewest number of characters as possible anywhere in the word. If there is more than one palindrome of minimum length that can be made, return the lexicographically earliest one (the first one alphabetically).",
+        "sampleInput": "word = 'race'",
+        "sampleOutput": "ecarace",
+        "difficulty": "Medium",
+        "stdin": "abcda",
+        "targetStdout": "adcbcda",
+        "solution": [
+          {
+            "code": "def create_palindrome_1(word):\n    n = len(word)\n\n    # base cases\n    if n == 1:\n        return word\n    if n == 2:\n        if word[0] != word[1]:\n            word += word[0] # make a palindrom\n        return word\n\n    # check if the first and last chars are same\n    if word[0] == word[-1]:\n        # add first and last chars\n        return word[0] + create_palindrome_1(word[1:-1]) + word[-1]\n\n    # if not remove the first and after that the last char\n    # and find which result has less chars\n    first = create_palindrome_1(word[1:])\n    first = word[0] + first + word[0] # add first char twice\n\n    last = create_palindrome_1(word[:-1])\n    last = word[-1] + last + word[-1] # add last char twice\n\n    if len(first) < len(last):\n        return first\n    return last",
+            "explanation": "Recursive count how many insertions are needed, very slow and inefficient.\n\n**Time Complexity:** `O(2^N)`\n\n**Space Complexity:** `O(N^2)`, for each function call a new string is created (and the recursion can have depth of max N calls)"
+          },
+          {
+            "code": "import math\n\ndef create_palindrome_2(word):\n    n = len(word)\n    dp = [[0 for j in range(n)] for i in range(n)]\n\n    # run dp\n    for gap in range(1, n):\n        left = 0\n        for right in range(gap, n):\n            if word[left] == word[right]:\n                dp[left][right] = dp[left + 1][right - 1]\n            else:\n                dp[left][right] = min(dp[left][right - 1], dp[left + 1][right]) + 1\n            left += 1\n\n    # build the palindrome using the dp table\n    return build_palindrome(word, dp, 0, n-1)\n\ndef build_palindrome(word, dp, left, right):\n    # similar like the first solution, but without exponentially branching\n    # this is linear time, we already know the inserting values\n    if left > right:\n        return ''\n    if left == right:\n        return word[left]\n\n    if word[left] == word[right]:\n        return word[left] + build_palindrome(word, dp, left + 1, right - 1) + word[left]\n\n    if dp[left + 1][right] < dp[left][right - 1]:\n        return word[left] + build_palindrome(word, dp, left + 1, right) + word[left]\n\n    return word[right] + build_palindrome(word, dp, left, right - 1) + word[right]",
+            "explanation": "Dynamic programming. Count intersections looking in 3 direction in the dp table (diagonally left-up or min(left, up)).\n\n**Time Complexity:** `O(N^2)`\n\n**Space Complexity:** `O(N^2)`"
+          }
+        ]
+      },
+      {
+        "id": 24,
+        "title": "Longest Common Subsequence",
+        "category": "Dynamic Programming",
+        "description": "Given 2 strings, find the longest common subseqence - [Longest Common Subsequence Problem](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem)\nNOT Longest Common Substring, this is a different problem.\nSubstring is a string composed ONLY of neighboring chars, subsequence could contain non-neighboring chars.",
+        "sampleInput": "'ABAZDC', 'BACBAD'",
+        "sampleOutput": "'ABAD'",
+        "difficulty": "Medium",
+        "stdin": "'ABAZDC' 'BACBAD'",
+        "targetStdout": "ABAD",
+        "solution": [
+          {
+            "code": "def longest_common_subsequence(str1, str2):\n    n, m = len(str1), len(str2)\n    # create dp matrix\n    dp = [[0 for j in range(m + 1)] for i in range(n + 1)]\n\n    # run dp\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            # checks only in 3 directions in the table\n            # in short: to the current position dp could come from those 3 previous positions\n            #   ^  ^\n            #    \\ |\n            #   <- O\n            if str1[i - 1] == str2[j - 1]:\n                # from this position dp could come only if there is a match in the previous chars\n                dp[i][j] = dp[i - 1][j - 1] + 1\n            else:\n                # dp could come from these positions only if there is no much\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n\n    # find the subseqence/string\n    letters = dp[n][m]\n    # use an array for storing the chars because string manipulation operations are not time and space efficient\n    result = ['' for i in range(letters)]\n    i = n\n    j = m\n\n    while (i != 0) and (j != 0):\n        # use the inverse logic from upper code (filling the dp table)\n        if str1[i - 1] == str2[j - 1]:\n            letters -= 1\n            result[letters] = str1[i - 1]\n            j -= 1\n            i -= 1\n        elif dp[i - 1][j] < dp[i][j - 1]:\n            j -= 1\n        else:\n            i -= 1\n\n    return ''.join(result)",
+            "explanation": "Dynamic programming solution.\nFind more details here: [https://www.geeksforgeeks.org/printing-longest-common-subsequence/](https://www.geeksforgeeks.org/printing-longest-common-subsequence/)\n\n**Time Complexity:** `O(N * M)`\n\n**Space Complexity:** `O(N * M)`, can be `O(M)` see `longest_common_substring.py` solution (but you'll need to save subsequences)"
+          }
+        ]
+      },
+      {
+        "id": 25,
+        "title": "Max Profit With K Transactions",
+        "category": "Dynamic Programming",
+        "description": "You are given an array of integers representing the prices of a single stock on various days\n(each index in the array represents a different day).\nYou are also given an integer `k`, which represents the number of transactions you are allowed to make.\nOne transaction consists of buying the stock on a given day and selling it on another, later day.\nWrite a function that returns the maximum profit that you can make buying and selling the stock,\ngiven `k` transactions. Note that you can only hold 1 share of the stock at a time; in other words,\nyou cannot buy more than 1 share of the stock on any given day, and you cannot buy a share of the\nstock if you are still holding another share.\nIn a day, you can first sell a share and buy another after that.", 
+        "sampleInput": "[5, 11, 3, 50, 60, 90], 2",
+        "sampleOutput": "93",
+        "difficulty": "Hard",
+        "stdin": "[5, 11, 3, 50, 60, 90] 2",
+        "targetStdout": "93",
+        "solution": [
+          {
+            "code": "import math\n\ndef max_profit_with_k_transactions(prices, k):\n    days = len(prices)\n    if days < 2:\n        # not enough days for a transaction\n        return 0\n\n    # transaction = buy + sell (2 separate days)\n    # in a day you can sell and after that buy a share\n    # (according to this, can't exists more transactions than the number of the prices/days)\n    k = min(k, days)\n    # create space optimized dp matrix\n    dp = [[0 for j in range(days)] for i in range(2)]\n\n    for t in range(k):\n        max_prev = -math.inf\n\n        # compute which row is previous and which is the current one\n        prev_idx = (t - 1) % 2\n        curr_idx = t % 2\n\n        # the values in dp table for these days will be same\n        # just ignore them, don't update them (because those combinations were tried)\n        past_days = t\n        # only save the last one\n        dp[curr_idx][past_days] = dp[prev_idx][past_days]\n\n        for d in range(past_days + 1, days):\n            # first try to buy with the current price\n            max_prev = max(max_prev, dp[prev_idx][d - 1] - prices[d - 1])\n            # after that try to sell with the current price\n            dp[curr_idx][d] = max(dp[curr_idx][d - 1], max_prev + prices[d])\n\n    # return the last value from the last transaction\n    return dp[(k - 1) % 2][-1]",
+            "explanation": "Optimized dynamic programming solution.\nFor this solution you'll need only the current and previous rows.\nThe original (not optimized) DP formula is: MAX(dp[t][d-1], price[d] + MAX(dp[t-1][x] - price[x])),\nbut this is **O(N * К)** Time Complexity, and **O(N)** space complexity.\n\n**Time Complexity:** O(N * К)\n\n**Space Complexity:** O(N)"
+          }
+        ]
+      },
+      {
+        "id": 26,
+        "title": "Min Cost Coloring",
+        "category": "Dynamic Programming",
+        "description": "A builder is looking to build a row of **N** houses that can be of **K** different colors.\nHe has a goal of minimizing cost while ensuring that no two neighboring houses are of the same color.\nGiven an **N** by **K** matrix where the *nth* row and *kth* column represents the cost to build the *nth* house with *kth* color, return the minimum cost which achieves this goal.",
+        "sampleInput": "[[1, 2, 3, 4, 5], [5, 4, 3, 2, 1], [3, 2, 1, 4, 5], [3, 2, 1, 4, 3]]",
+        "sampleOutput": "5",
+        "difficulty": "Medium",
+        "stdin": "[[1, 2, 3, 4, 5], [5, 4, 3, 2, 1], [3, 2, 1, 4, 5], [3, 2, 1, 4, 3]]",
+        "targetStdout": "5",
+        "solution": [
+          {
+            "code": "import math\n\ndef min_cost_coloring(dp):\n    n = len(dp)\n    if n == 0:\n        return 0\n    m = len(dp[0])\n    if m < 2:\n        return -1\n\n    prev_min = [(0, -1), (0, -1)]\n\n    for i in range(n):\n        curr_min = [(math.inf, -1), (math.inf, -1)]\n\n        for j in range(m):\n            if j != prev_min[0][1]:\n                dp[i][j] += prev_min[0][0]\n            else:\n                dp[i][j] += prev_min[1][0]\n\n            if curr_min[0][0] > dp[i][j]:\n                curr_min[1] = curr_min[0]\n                curr_min[0] = (dp[i][j], j)\n            elif curr_min[1][0] > dp[i][j]:\n                curr_min[1] = (dp[i][j], j)\n\n        prev_min = curr_min\n\n    return min(dp[n - 1])",
+            "explanation": "Dynamic programming, for each house search for the cheapest combination of the previous houses.\nBut don't search the whole array with combinations (colors), save only the smallest 2 (in this case we're sure that the previous house doesn't have the same color).\n\n**Time Complexity:** `O(N * K)`\n\n**Space Complexity:** `O(1)`"
+          }
+        ]
+      },
+      {
+        "id": 27,
+        "title": "Number of Decodings",
+        "category": "Dynamic Programming",
+        "description": "Given the mapping `a=1`, `b=2`, ... , `z=26`, and an encoded message, count the number of ways it can be decoded.\nFor example, the message `111` would give 3, since it could be decoded as `aaa`, `ka` and `ak`.\nAll of the messages are decodable!",
+        "sampleInput": "12151",
+        "sampleOutput": "5",
+        "difficulty": "Medium",
+        "stdin": "12151",
+        "targetStdout": "5",
+        "solution": [
+          {
+            "code": "def num_decodings(code):\n    n = len(code)\n    dp = [0 for i in range(n)]\n\n    if n == 0:\n        return 0\n    dp[0] = 1\n    if n == 1:\n        return dp[0]\n    dp[1] = (code[1] != '0') + is_valid(code[0:2])\n\n    for i in range(2, n):\n        if code[i] != '0':\n            # looking for how many combinations are there till now if this is a single digit\n            dp[i] += dp[i-1]\n        if is_valid(code[i-1 : i+1]):\n            # looking for how many combinations are there till now if this is a number of 2 digits\n            dp[i] += dp[i-2]\n\n    return dp[n-1]\n\ndef is_valid(code):\n    k = int(code)\n    return (k < 27) and (k > 9)",
+            "explanation": "Dynamic programming solution. Similar to `number_of_smses.py`.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(N`)"
+          }
+        ]
+      },
+      {
+        "id": 28,
+        "title": "Ordered Digits",
+        "category": "Dynamic Programming",
+        "description": "We are given a number and we need to transform to a new number where all its digits are ordered in a non descending order.\nWe are allowed to increase or decrease a digit by 1, and each of those actions counts as one operation.\nWe are also allowed to over/underflow a number meaning from '9' we can change to '0' and also from '0' to '9', also costing only one operation.\nOne same digit can be changed multiple times.\nFind the minimum number of operations we need to do do to create a new number with its ordered digits.",
+        "sampleInput": "301",
+        "sampleOutput": "3",
+        "difficulty": "Medium",
+        "stdin": "301",
+        "targetStdout": "3",
+        "solution": [
+          {
+            "code": "def ordered_digits(number):\n    n = len(number)\n    dp = [[0 for j in range(10)] for i in range(2)]\n\n    for i in range(n):\n        min_prev = float('inf')\n        for j in range(10):\n            # find the min value from the previous digit and add it to the current value\n            min_prev = min(min_prev, dp[(i - 1) % 2][j])\n            # compute diff between the current digit and wanted digit\n            diff = abs(j - int(number[i]))\n            dp[i % 2][j] = min(diff, 10 - diff) + min_prev\n\n    # min value from the last digit\n    return min(dp[(n - 1) % 2])",
+            "explanation": "Dynamic programming solution. For each position, calculate the cost of transformation to each possible digit (0-9).\nAnd take the minimum value from the previous position (but smaller than the current digit).\n\n**Time Complexity:** `O(N)`  , O(N*10) = O(N), N = number of digits\n\n**Space Complexity:** `O(N)`  , same O(N*2) = O(N)"
+          }
+        ]
+      },
+      {
+        "id": 29,
+        "title": "Split Coins",
+        "category": "Dynamic Programming",
+        "description": "You have a number of coins with various amounts.\nYou need to split the coins in two groups so that the difference between those groups in minimal.",
+        "sampleInput": "[1, 1, 1, 3, 5, 10, 18]",
+        "sampleOutput": "1",
+        "difficulty": "Easy",
+        "stdin": "[1, 1, 1, 3, 5, 10, 18]",
+        "targetStdout": "1",
+        "solution": [
+          {
+            "code": "def split_coins(coins):\n    if len(coins) == 0:\n        return -1\n\n    full_sum = sum(coins)\n    half_sum = full_sum // 2 + 1\n\n    dp = [False]*half_sum\n    dp[0] = True\n\n    for c in coins:\n        for i in range(half_sum - 1, -1, -1):\n            if (i >= c) and dp[i - c]:\n                # if you want to find coins, save the coin here dp[i] = c\n                dp[i] = True\n\n    for i in range(half_sum - 1, -1, -1):\n        if dp[i]:\n            # if you want to print coins, while i>0: print(dp[i]) i -= dp[i]\n            return full_sum - 2 * i\n\n    # not possible\n    return -1",
+            "explanation": "Simple dynamic programming solution. Find the closest sum to the half of the sum of all coins.\n\n**Time Complexity:** `O(C*HS)`, C = number of coins, HS = half of the sum of all coins\n\n**Space Complexity:** `O(HS`)"
+          }
+        ]
+      }
+      
+
+
+
+]

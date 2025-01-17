@@ -1,0 +1,192 @@
+[
+  {
+    "id": 10,
+    "title": "Find missing number in second array",
+    "category": "Arrays",
+    "description": "Given two arrays, first array with `N` elements and second array with `N-1` elements.\nAll elements from the first array exist in the second array, except one. Find the missing number.",
+    "sampleInput": "first array = [1, 2, 3, 4, 5], second array = [1, 2, 3, 4]",
+    "sampleOutput": "5",
+    "difficulty": "Medium",
+    "stdin": "[2131, 2122221, 64565, 33333333, 994188129, 865342234] [994188129, 2122221, 865342234, 2131, 64565]",
+    "targetStdout": "33333333",
+    "solution": [
+      {
+        "code": "def find_missing_number(arr1, arr2):\n    n = len(arr2)\n    mod = 10000 # this can be every number, this should be true max_length * mod < max_integer\n    sum_diff = 0\n    mod_diff = 0\n    i = 0\n\n    while i < n:\n        # this is in case if we have too big numbers and to big arrays\n        sum_diff += arr1[i] % mod - arr2[i] % mod\n        mod_diff += arr1[i] // mod - arr2[i] // mod\n        i += 1\n\n    # don't forget the last element from the first array!\n    sum_diff += arr1[n] % mod\n    mod_diff += arr1[n] // mod\n\n    return mod * mod_diff + sum_diff\n\n# Test 1\n# Correct result => 33333333\narr1 = [2131, 2122221, 64565, 33333333, 994188129, 865342234]\narr2 = [994188129, 2122221, 865342234, 2131, 64565]\nprint(find_missing_number(arr1, arr2))\n\n# Test 2\n# Correct result => 5\n# arr1 = [1, 2, 3, 4, 5]\n# arr2 = [1, 2, 3, 4]\n# print(find_missing_number(arr1, arr2))",
+        "explanation": "The simplest solution is to substract the sum of the second array from the sum of the first array:\n\n`missing_number = sum(arr1) - sum(arr2)`\n\nBut what if we have milions of elements and all elements are with 8-9 digits values?\nIn this case we'll need to use modulo operation. Make two sums, the first one from MODULO of each element\nand the second one from the DIVIDE of each element. In the end use these 2 sums to compute the missing number.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+      },
+      {
+        "code": "def find_missing_number_2(arr1, arr2):\n    n = len(arr2)\n    missing = 0\n    i = 0\n\n    while i < n:\n        missing ^= arr1[i] ^ arr2[i]\n        i += 1\n\n    # don't forget the last element from the first array!\n    missing ^= arr1[n]\n\n    return missing\n\n# Test 1\n# Correct result => 33333333\narr1 = [2131, 2122221, 64565, 33333333, 994188129, 865342234]\narr2 = [994188129, 2122221, 865342234, 2131, 64565]\nprint(find_missing_number_2(arr1, arr2))\n\n# Test 2\n# Correct result => 5\n# arr1 = [1, 2, 3, 4, 5]\n# arr2 = [1, 2, 3, 4]\n# print(find_missing_number_2(arr1, arr2))",
+        "explanation": "The second solution is XOR soulution, make XOR to each element from the both arrays (same as `find_unpaired.py`).\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Count Triplets with Sum K",
+    "category": "Arrays",
+    "description": "Given an array (sorted in ascending order) and a value, count how many triplets exist in array whose sum is equal to the given value.",
+    "sampleInput": "[1, 2, 3, 4, 5], 9",
+    "sampleOutput": "2",
+    "difficulty": "Medium",
+    "stdin": "[1,2,3,4,5] 9",
+    "targetStdout": "2",
+    "solution": [
+      {
+        "code": "def count_triplets_1(arr, k):\n    count = 0\n    n = len(arr)\n\n    for i in range(n - 2):\n        elements = set()\n        curr_sum = k - arr[i]\n\n        for j in range(i + 1, n):\n            if (curr_sum - arr[j]) in elements:\n                count += 1\n            elements.add(arr[j])\n\n    return count\n\n# Test 1\n# Correct result => 1\narr = [10, 11, 16, 18, 19]\nk = 40\nprint(count_triplets_1(arr, k))",
+        "explanation": "Fix the first element (`i`), move the second element (`j`) and search into the hashset. (similar approach to `find_pairs_with_sum_k.py`).\n\n**Time Complexity:** `O(N^2)`\n\n**Space Complexity:** `O(N)`"
+      },
+      {
+        "code": "def count_triplets_2(arr, k):\n    count = 0\n    n = len(arr)\n\n    for i in range(n - 2):\n        left = i + 1\n        right = n - 1\n\n        while left < right:\n            curr_sum = arr[i] + arr[left] + arr[right]\n            if curr_sum == k:\n                count += 1\n                right -= 1\n            elif curr_sum < k:\n                left += 1\n            else:\n                right -= 1\n\n    return count\n\n# Test 1\n# Correct result => 1\narr = [10, 11, 16, 18, 19]\nk = 40\nprint(count_triplets_2(arr, k))",
+        "explanation": "Fix the first element (`i`), and play with 2 pointers from the left (`i+1`) and right (`n-1`) side. If the current sum is smaller than `K` then increase the left pointer, otherwise decrease the right pointer.\n* This solution works only for elements in sorted ascending order. If the elements aren't sorted, first sort them and after that use this algorithm, the time complexity will be same `O(NLogN + N^2) = O(N^2)`.\n\n**Time Complexity:** `O(N^2)`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Find the Busiest Interval",
+    "category": "Arrays",
+    "description": "Given a list of arriving time and leaving time for each celebrity.\nCelebrity I, arrives at arriving[I] time and leaves at leaving[I] time.\nOutput is the time interval that you want to go the party when the maximum number of celebrities are still there.",
+    "sampleInput": "arriving=[30, 0, 60], leaving=[75, 50, 150]",
+    "sampleOutput": "(30, 50) or (60, 75)",
+    "difficulty": "Medium",
+    "stdin": "[30, 0, 60] [75, 50, 150]",
+    "targetStdout": "(30, 50) or (60, 75)",
+    "solution": [
+      {
+        "code": "def bussiest_interval(arriving, leaving):\n    # sort both arrays (don't care about pairs)\n    arriving.sort()\n    leaving.sort()\n\n    n = len(arriving)\n    i, j = 0, 0\n    start, end = 0, 0\n    overlapping = 0\n    max_overlapping = 0\n\n    # both arrays have same number of elements\n    # but the biggest time is from the leaving array\n    # becayse of that you're sure that 'i' will reach the end before 'j'\n    while i < n:\n        if arriving[i] <= leaving[j]:\n            overlapping += 1\n            if max_overlapping <= overlapping:\n                max_overlapping = overlapping\n                # save the start time if max_overlapping\n                start = arriving[i]\n            i += 1\n        else:\n            if max_overlapping == overlapping:\n                # save the exit time if max_overlapping\n                end = leaving[j]\n            overlapping -= 1\n            j += 1\n\n    # check again this to close the result interval because 'i' is completed and not 'j'\n    if max_overlapping == overlapping:\n        end = leaving[j]\n\n    # return start&end or max_overlapping\n    return (start, end)",
+        "explanation": "Just sort the lists, don't care about pairs ordering.\nAnd use a counter, when arriving counter++, when leaving counter--.\n\n**Time Complexity:** `O(N LogN)`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Find first missing positive integer (>0)",
+    "category": "Arrays",
+    "description": "Given an array of integers, find the first missing positive integer in linear time and constant space.\nIn other words, find the lowest positive integer that does not exist in the array.\nThe array can contain duplicates and negative numbers as well.\nNote: you can modify the input array in-place.",
+    "sampleInput": "[3, 4, -1, 1]",
+    "sampleOutput": "2",
+    "difficulty": "Medium",
+    "stdin": "[-1, 2, 3]",
+    "targetStdout": "1",
+    "solution": [
+      {
+        "code": "def find_first_missing_1(a):\n    n = len(a)\n\n    for i in range(n):\n        while (a[i] > 0) and (a[i] <= n):\n            swap = a[i] - 1\n            if a[i] == a[swap]:\n                break\n\n            a[i], a[swap] = a[swap], a[i]\n\n    for i in range(n):\n        if a[i] - 1 != i:\n            return i + 1\n\n    return n + 1",
+        "explanation": "Move all values to their positions (val position = val - 1), in the end find the first\nposition which doesn't have the needed value.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1`)"
+      },
+      {
+        "code": "def find_first_missing_2(a):\n    n = len(a)\n\n    for i in range(n):\n        if a[i] <= 0:\n            a[i] = n + 1 # those values won't be used later\n\n    for i in range(n):\n        idx = abs(a[i]) - 1\n        if idx >= n:\n            continue\n\n        a[idx] = -abs(a[idx])\n\n    for i in range(n):\n        if a[i] > 0:\n            return i + 1\n\n    return n + 1",
+        "explanation": "Play with indices and mark them (make it negative), a marked index means that the number equals to that index exist in the array.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1`)"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Find the missing number in a sequence",
+    "category": "Arrays",
+    "description": "Given an array of integers, find the only missing integer in a sequence. All numbers are integers and they're smaller or equal to `N+1` (where `N` is the length of the array).",
+    "sampleInput": "[2, 1, 4]",
+    "sampleOutput": "3",
+    "difficulty": "Easy",
+    "stdin": "[2, 1, 4]",
+    "targetStdout": "3",
+    "solution": [
+      {
+        "code": "def missing_number(nums):\n    s = sum(nums)\n    n = len(nums) + 1\n    # sum formula (sum of the first n numbers) = (N*(N+1))/2\n    return n * (n + 1) // 2 - s\n\n# Test 1\n# Correct result => 4\nprint(missing_number([2, 3, 1]))\n",
+        "explanation": "Searching for 1 unknown, math problem. Use the sum formula for the first N numbers to compute the whole sum of the sequence. After that, sum all elements from the array, and when you subtract those 2 numbers, you'll get the missing number.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Find Peak Element",
+    "category": "Arrays",
+    "description": "A peak element is an element that is greater than its neighbors.\nGiven an input array `nums`, where `nums[i] ≠ nums[i+1]`, find a peak element and return its index.\nThe array may contain multiple peaks, in that case return the index to any one of the peaks is fine.\nYou may imagine that `nums[-1] = nums[n] = -∞`.",
+    "sampleInput": "[1, 2, 3, 1]",
+    "sampleOutput": "2",
+    "difficulty": "Medium",
+    "stdin": "[1, 2, 3, 1]",
+    "targetStdout": "2",
+    "solution": [
+      {
+        "code": "def find_peak_element(nums):\n    l = 0\n    r = len(nums) - 1\n\n    while l < r:\n        mid = (l + r) // 2\n        if nums[mid] > nums[mid + 1]:\n            # go left if the current value is smaller than the next one\n            # in this moment you're sure that there is a peak element left from this one\n            r = mid\n        else:\n            # go right if the current value is smaller than the next one\n            # if the l comes to the end and all elements were in ascending order, then the last one is peak (because nums[n] is negative infinity)\n            l = mid + 1\n\n    return l",
+        "explanation": "Binary search (more description in the code).\n\n**Time Complexity:** `O(LogN`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "title": "Jump Game",
+    "category": "Arrays",
+    "description": "Given an array of non-negative integers, you are initially positioned at the first index of the array.\nEach element in the array represents your maximum jump length at that position.\nDetermine if you are able to reach the last index.",
+    "sampleInput": "[2, 3, 1, 1, 4]",
+    "sampleOutput": "True",
+    "difficulty": "Medium",
+    "stdin": "[2, 3, 1, 1, 4]",
+    "targetStdout": "True",
+    "solution": [
+      {
+        "code": "def can_jump(nums):\n    n = len(nums)\n    if n == 0:\n        return False\n\n    max_jump = 0\n    for i in range(n):\n        # if this field isn't reachable return False\n        if max_jump < i:\n            return False\n\n        this_jump = i + nums[i]\n        max_jump = max(max_jump, this_jump)\n\n        # if the jump is greater or equal to the last element return True\n        if max_jump >= n - 1:\n            return True",
+        "explanation": "Just iterate the array and in each step save the farthest reachable position.\nIf the current position is smaller than the farthest position, then the end isn't reachable.\n\n**Time Complexity:** `O(N)`\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "title": "K-th Smallest Number",
+    "category": "Arrays",
+    "description": "Find the K-th smallest number in an unordered list.",
+    "sampleInput": "[6, 2, 4, 8, 10, 1, 11], 1",
+    "sampleOutput": "0",
+    "difficulty": "Medium",
+    "stdin": "[1, 1, 1, 1, 1, 1]",
+    "targetStdout": "1",
+    "solution": [
+      {
+        "code": "def find_kth_smallest_recursive(arr, k):\n    n = len(arr)\n    if k > n:\n        return None\n    if k < 1:\n        return None\n    return kth_smallest(arr, k - 1, 0, n - 1)\n\ndef kth_smallest(arr, k, left, right):\n    pivot = pivoting(arr, left, right)\n\n    if pivot > k:\n        return kth_smallest(arr, k, left, pivot - 1)\n    if pivot < k:\n        return kth_smallest(arr, k, pivot + 1, right)\n\n    return arr[pivot]\n\n# ... (comments for the tests are ommited for brevity)",
+        "explanation": "This solution is based on the quick sort algorithm (pivoting, divide and conquer).\nMore precisly in-place quick sort. Recursive solution.\n   **Time Complexity:** `O(N)`    , `O(N + N/2 + N/4 + N/8 + ... + 1 = 2*N = N)`\n   **Space Complexity:** `O(LogN)` , because of the recursion stack"
+      },
+      {
+        "code": "def find_kth_smallest(arr, k):\n    n = len(arr)\n    if k > n:\n        return None\n    if k < 1:\n        return None\n\n    k -= 1\n    left = 0\n    right = n - 1\n\n    while True:\n        pivot = pivoting(arr, left, right) # the same method from the previous solution\n\n        if pivot > k:\n            right = pivot - 1\n        elif pivot < k:\n            left = pivot + 1\n        else:\n            return arr[pivot]\n\n    # not possible\n    return None",
+        "explanation": "Completely the same algorithm as the previous one, but without recursion. This solution is cleaner.\nThis algorithm is called: QucikSelect - The quicksort pivoting logic but for searching kth smallest (not sorting the whole array) - O(n) complexity (n + n/2 + n/4 + ... + 1 = 2n)\n[Quickselect](https://en.wikipedia.org/wiki/Quickselect)\n    **Time Complexity:** `O(N)`\n    **Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "title": "Min Swaps",
+    "category": "Arrays",
+    "description": "You have a list of numbers and you want to sort the list. The only operation you have is a swap of any two arbitrary numbers. Find the minimum number of swaps you need to do in order to make the list sorted (ascending order).\n- The array will contain N elements\n- Each element will be between 1 and N inclusive\n- All the numbers will be different",
+    "sampleInput": "[4, 1, 3, 2]",
+    "sampleOutput": "2",
+    "difficulty": "Medium",
+    "stdin": "[4, 1, 3, 2]",
+    "targetStdout": "2",
+    "solution": [
+      {
+        "code": "def min_swaps(a):\n    n = len(a)\n    swaps = 0\n\n    for i in range(n):\n        # swap the elements till the right element isn't found\n        while a[i] - 1 != i:\n            swap = a[i] - 1\n            # swap the elements\n            a[swap], a[i] = a[i], a[swap]\n\n            swaps += 1\n\n    return swaps\n\n# Test 1\n# Correct result => 2\nprint(min_swaps([4, 1, 3, 2]))",
+        "explanation": "According to the description, all elements will have their position in the array, for example, `K` should be located at `K-1` in the array.\nIterate the array and check if each position has the right element, if not, put that element in the right position and check again.\n\n**Time Complexity:** `O(N)`, the solution looks like `O(N^2)` but that's not possible, at most `O(2*N)` operations can be done\n\n**Space Complexity:** `O(1)`"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "title": "Top K Frequent Elements",
+    "category": "Arrays",
+    "description": "Given a non-empty array of integers, return the k most frequent elements.\nThe order of the result isn't important.",
+    "sampleInput": "[1, 1, 1, 2, 2, 3], 2",
+    "sampleOutput": "[1, 2]",
+    "difficulty": "Medium",
+    "stdin": "[1, 1, 1, 2, 2, 3]",
+    "targetStdout": "[1, 2]",
+    "solution": [
+      {
+        "code": "import heapq\n\nclass PQElement:\n    def __init__(self, el):\n        self.frequency, self.val = el\n\n    def __lt__(self, other):\n        return self.frequency < other.frequency\n\nclass PriorityQueue:\n    def __init__(self):\n        self.data = []\n\n    def push(self, el):\n        heapq.heappush(self.data, PQElement(el))\n\n    def pop(self):\n        return heapq.heappop(self.data)\n\n    def count(self):\n        return len(self.data)\n\ndef top_k_frequent_1(nums, k):\n    frequency = {}\n\n    for num in nums:\n        if num in frequency:\n            frequency[num] += 1\n        else:\n            frequency[num] = 1\n\n    arr = [(frequency[el], el) for el in frequency]\n    n = len(arr)\n\n    if k > n:\n        return [el[1] for el in arr]\n    if k < 1:\n        return []\n\n    heap = PriorityQueue()\n    for el in arr:\n        heap.push(el)\n        if heap.count() > k:\n            heap.pop()\n\n    return [el.val for el in heap.data]",
+        "explanation": "Using Min Priority Queue, in each step add an element with its frequency and remove the element with the smallest frequency\nif there are more than K elements inside the Priority Queue. This solution isn't much faster than sorting the frequencies.\n\n**Time Complexity:** `O(U LogK)`, U in this case is the number of unique elements (but all elements from the array could be unique, so because of that U can be equal to N)\n\n**Space Complexity:** `O(N`)"
+      },
+      {
+        "code": "def top_k_frequent_2(nums, k):\n    frequency = {}\n\n    for num in nums:\n        if num in frequency:\n            frequency[num] += 1\n        else:\n            frequency[num] = 1\n\n    arr = [(frequency[el], el) for el in frequency]\n    n = len(arr)\n\n    if k > n:\n        return [el[1] for el in arr]\n    if k < 1:\n        return []\n\n    k -= 1\n    left = 0\n    right = n - 1\n\n    while True:\n        pivot = pivoting(arr, left, right)\n\n        if pivot > k:\n            right = pivot - 1\n        elif pivot < k:\n            left = pivot + 1\n        else:\n            return [el[1] for el in arr[:k + 1]]\n\n    return None\n\ndef pivoting(arr, left, right):\n    pivot = right\n    new_pivot = left\n\n    for j in range(left, right):\n        if arr[j][0] > arr[pivot][0]:\n            swap(arr, new_pivot, j)\n            new_pivot += 1\n\n    swap(arr, new_pivot, pivot)\n\n    return new_pivot\n\ndef swap(arr, i, j):\n    arr[i], arr[j] = arr[j], arr[i]",
+        "explanation": "Using pivoting, this solution is based on the quick sort algorithm (divide and conquer).\nThis algorithm is called: QucikSelect - The quicksort pivoting logic but for searching kth smallest (not sorting the whole array) - O(n) complexity (n + n/2 + n/4 + ... + 1 = 2n).\nSame solution as `kth_smallest.py`.\n\n**Time Complexity:** `O(U)`\n\n**Space Complexity:** `O(N`)"
+      }
+    ]
+  }
+]

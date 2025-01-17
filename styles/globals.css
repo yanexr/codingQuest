@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::selection {
+  color: white;
+  background: #3aa672d5;
+  border: 2px solid red;
+  border-radius: 25px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: #52c18b;
+  border-radius: 50%;
+}
+
+@layer components {
+  .react-markdown {
+    @apply prose
+      dark:prose-invert
+      prose-headings:text-lg
+      prose-headings:font-bold
+      prose-pre:p-0
+      prose-pre:border
+      prose-pre:border-neutral-300
+      dark:prose-pre:border-neutral-600
+      prose-pre:bg-neutral-50
+      dark:prose-pre:bg-neutral-900
+      prose-headings:my-1
+      prose-p:my-2
+      prose-hr:my-4
+      prose-hr:border-neutral-300
+      dark:prose-hr:border-neutral-500
+      prose-p:leading-[1.5rem]
+      prose-th:text-sm
+      prose-table:border-collapse
+      prose-td:border
+      prose-th:border
+      prose-td:border-neutral-400
+      dark:prose-td:border-neutral-600
+      prose-th:border-neutral-400
+      dark:prose-th:border-neutral-600;
+  }
+
+  .react-markdown thead {
+    @apply bg-neutral-300 dark:bg-neutral-700;
+  }
+
+  .react-markdown th {
+    @apply align-middle pt-2;
+  }
+
+  .react-markdown th:first-child,
+  .react-markdown td:first-child {
+    @apply pl-4;
+  }
+}
+
+.listGrid {
+  display: grid;
+  grid-template-columns: min-content 6fr 2fr 2fr 2fr 1fr;
+}
+
+@media (max-width: 1024px) {
+  .listGrid {
+    grid-template-columns: min-content 6fr 2fr 2fr 1fr;
+  }
+}
