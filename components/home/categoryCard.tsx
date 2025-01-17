@@ -1,7 +1,7 @@
 import { IQuest } from "@/types/quest";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../button";
 
 export interface CategoryInfo {

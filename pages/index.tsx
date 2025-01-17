@@ -159,7 +159,7 @@ export default function Home() {
             appear={true}
             show={true}
             enter="transition ease-in-out duration-500 transition"
-            enterFrom="opacity-0 tranneutral-y-4"
+            enterFrom="opacity-0 translate-y-4"
             enterTo="opacity-100"
           >
             <h1 className="text-center text-5xl md:text-6xl font-extrabold text-neutral-800 dark:text-white">
@@ -171,7 +171,7 @@ export default function Home() {
             appear={true}
             show={true}
             enter="transition ease-in-out duration-500 delay-100 transition"
-            enterFrom="opacity-0 tranneutral-y-4"
+            enterFrom="opacity-0 translate-y-4"
             enterTo="opacity-100"
           >
             <h2 className="max-w-[34rem] md:max-w-[44rem] mx-auto text-center md:text-lg text-neutral-600 dark:text-neutral-300/75 font-[500]">
@@ -185,7 +185,7 @@ export default function Home() {
             appear={true}
             show={true}
             enter="transition ease-in-out duration-500 delay-200 transition"
-            enterFrom="opacity-0 tranneutral-y-4"
+            enterFrom="opacity-0 translate-y-4"
             enterTo="opacity-100"
           >
             <div className="flex justify-center pt-6">

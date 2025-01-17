@@ -1,7 +1,6 @@
 import { PlayIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Transition } from "@headlessui/react";
-import { useState } from "react";
 
 interface StartWithSelectedButtonProps {
   selectedIds: number[];
@@ -15,11 +14,11 @@ export default function StartWithSelectedButton(
       <Transition
         show={props.isShowing}
         enter="transition ease-in-out duration-300 transform"
-        enterFrom="tranneutral-y-28"
-        enterTo="tranneutral-y-0"
+        enterFrom="translate-y-28"
+        enterTo="translate-y-0"
         leave="transition ease-in-out duration-300 transform"
-        leaveFrom="tranneutral-y-0"
-        leaveTo="tranneutral-y-28"
+        leaveFrom="translate-y-0"
+        leaveTo="translate-y-28"
       >
         <Link href={"/exercise?" + props.selectedIds.join("+")}>
           <button className="flex items-center justify-center px-6 py-3 space-x-2 font-medium text-white text-lg bg-primary hover:bg-primary-dark transition rounded-full drop-shadow-2xl pointer-events-auto">
